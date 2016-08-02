@@ -28,28 +28,32 @@ namespace bondCrunchersUI
         {
             InitializeComponent();
         }
-        JavaScriptSerializer js = new JavaScriptSerializer();
-        private void BookTrade(object sender, RoutedEventArgs e)
-        {
-            WebClient web = new WebClient();
-            string uri = "http://192.168.66.53:8080/EBondTraderWeb/rest/EBond";
-            web.BaseAddress = uri;
-            //DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(TestClass));
-            
-            //TestClass t1 = (TestClass)serializer.ReadObject(web.OpenRead(uri));
-            //bondList.Items.Add(t1);
-            TestClass t1 = new TestClass("IN123", "mybond");
-            /*DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(TestClass));
-            MemoryStream ms = new MemoryStream();
-            json.WriteObject(ms, t1);
-            ms.Position = 0;
-            StreamReader sr = new StreamReader(ms);*/
-            string json = js.Serialize(t1);
-            web.Headers.Add(HttpRequestHeader.ContentType,"application/json");
-            web.UploadString(uri, "POST", json);   
-                    
-        }
-        //JavaScriptSerializer json = new JavaScriptSerializer();
 
+        JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+        string restURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product";
+        List<Bond> bondList = null;
+
+        private void Setup(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void LoadBonds(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                WebClient webClient = new WebClient();
+                string json = webClient.DownloadString(restURI);
+                bondList = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
+                foreach (Bond temp in bondList)
+                {
+                    bondData.Items.Add(temp);
+                }
+            }
+            catch(Exception ie)
+            {
+                MessageBox.Show(ie + "");
+            }
+        }
     }
 }

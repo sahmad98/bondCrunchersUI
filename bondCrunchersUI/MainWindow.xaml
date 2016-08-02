@@ -5,19 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:bondCrunchersUI"
         mc:Ignorable="d"
-        Title="EBond Trader" Height="621.053" Width="639.474">
+        Title="EBond Trader" Height="621.053" Width="791.474" Loaded="Setup">
     <Canvas>
-        <Label x:Name="label" Content="Bond Listing:" Canvas.Left="10" Canvas.Top="10" FontSize="16"/>
-        <ListView x:Name="bondList" Height="491" Canvas.Top="46" Width="631">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="ISIN Number" DisplayMemberBinding="{Binding isin}"/>
-                    <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <Button x:Name="btnBookTrade" Content="Book Trade" Canvas.Left="417" Canvas.Top="550" Width="75" Click="BookTrade"/>
-        <Button x:Name="btnTradeHistory" Content="Trade History" Canvas.Left="497" Canvas.Top="550" Width="103"/>
+        <Label x:Name="label" Content="Bond Management" Canvas.Left="7" Canvas.Top="3" FontSize="16"/>
+        <TabControl x:Name="tabControl" Height="552" Canvas.Top="39" Width="783">
+            <TabItem Header="Bond Listing">
+                <Canvas>
+                    <DataGrid x:Name="bondData" Height="482" Width="773">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ISIN" Binding="{Binding isin}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Maturity Date" Binding="{Binding maturity_Date}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Start Date" Binding="{Binding start_Date}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Bond Duration" Binding="{Binding bond_Duration}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Coupon Rate" Binding="{Binding coupon_Rate}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Coupon Period" Binding="{Binding coupon_Period}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="High" Binding="{Binding high}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Low" Binding="{Binding low}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Last" Binding="{Binding last}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Change" Binding="{Binding change}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Yield" Binding="{Binding yield}" IsReadOnly="True" />
+                            
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                    <Button x:Name="btnLoad" Content="Load Bonds" Canvas.Left="532" Canvas.Top="490" Width="75" Click="LoadBonds" />
+                    <Button x:Name="btnBook" Content="Book Trade" Canvas.Left="614" Canvas.Top="490" Width="75"/>
+
+                </Canvas>
+            </TabItem>
+            <TabItem Header="Transaction History">
+                <Canvas>
+                    <DataGrid x:Name="dataGrid" Height="520" Width="699">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="OrderID"/>
+                            <DataGridTextColumn Header="Time Stamp"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Canvas>
+            </TabItem>
+        </TabControl>
 
     </Canvas>
 </Window>

@@ -11,8 +11,34 @@ using System.Web.Script.Serialization;
 namespace bondCrunchersUI
 {
     [DataContract]
-    class Bond
+    public class Bond
     {
-        public string ISIN { get; private set; }
+        [DataMember]
+        public int id { get; set; }
+        [DataMember]
+        public string isin { get; set; }
+        [DataMember]
+        public string maturity_Date { get; set; }
+        [DataMember]
+        public string start_Date { get; set; }
+        [DataMember]
+        public int bond_Duration { get; set; }
+        [DataMember]
+        public double coupon_Rate { get; set; }
+        [DataMember]
+        public string coupon_Period { get; set; }
+        [DataMember]
+        public decimal high { get; set; }
+        [DataMember]
+        public decimal low { get; set; }
+        [DataMember]
+        public decimal last { get; set; }
+        [DataMember]
+        public decimal change { get; set; }
+        [DataMember]
+        public decimal yield { get;  set;}
+
+        //public string Image = "th.png";
     }
+
 }
