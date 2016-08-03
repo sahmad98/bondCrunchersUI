@@ -28,12 +28,12 @@ namespace bondCrunchersUI
         {
             InitializeComponent();
         }
-        public static string IP = "http://192.168.66.1:8080";
+        public static string IP = "";
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-        string restURI = IP+"/EBondTraderWeb/rest/bond";
-        string transactionURI = IP+"/EBondTraderWeb/rest/bond/transhis";
-        string searchURI = IP+"/EBondTraderWeb/rest/bond/allBondsBy";
-        string customerSearchURI = IP + "/EBondTraderWeb/rest/bond/allBondsByCustomSearch";
+        string restURI = ""; // IP + "/EBondTraderWeb/rest/bond";
+        string transactionURI = ""; // IP+"/EBondTraderWeb/rest/bond/transhis";
+        string searchURI = ""; // IP+"/EBondTraderWeb/rest/bond/allBondsBy";
+        string customerSearchURI = ""; // IP + "/EBondTraderWeb/rest/bond/allBondsByCustomSearch";
 
         public static List<Bond> bondList = null;
         public static string selectedBond = "";
@@ -60,6 +60,7 @@ namespace bondCrunchersUI
             {
                 MessageBox.Show(ie + "");
             }
+            MessageBox.Show(IP);
         }
 
         private void BookTrade(object sender, RoutedEventArgs e)
@@ -98,16 +99,9 @@ namespace bondCrunchersUI
 
         private void SearchChanged(object sender, TextChangedEventArgs e)
         {
-            /*
-            List<Bond> searchResult = bondList.FindAll(x => x.isin.StartsWith(txtSearch.Text));
-            */
-            //webClient.Headers.Add(HttpRequestHeader.ContentType, "text/plain");
             string json = "";
-            if (cmbCoupon.Text == "Any" || cmbCoupon.Text == "")
-                json = webClient.DownloadString(customerSearchURI + "?isin=" + txtSearch.Text);
-            else
-                json = webClient.DownloadString(customerSearchURI + "?isin=" + txtSearch.Text + "&coupon_Period="+cmbCoupon.Text);
-
+            string search = GetSearchURI();
+            json = webClient.DownloadString(customerSearchURI + search);
             List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
             bondData.Items.Clear();
             bondList = searchResult;
@@ -119,12 +113,13 @@ namespace bondCrunchersUI
 
         private void CouponPeriodChanged(object sender, EventArgs e)
         {
-            string search = null;
-            if (cmbCoupon.Text == "Any")
+            string search = GetSearchURI();
+            /*if (cmbCoupon.Text == "Any")
                 search = null;
             else
                 search = cmbCoupon.Text;
-            string json = webClient.DownloadString(searchURI + "CouponPeriod?coupon_Period=" + search);
+            */
+            string json = webClient.DownloadString(customerSearchURI +  search);
             List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
             bondData.Items.Clear();
             bondList = searchResult;
@@ -142,7 +137,8 @@ namespace bondCrunchersUI
 
         private void SearchIssuer(object sender, TextChangedEventArgs e)
         {
-            string json = webClient.DownloadString(searchURI + "IssuerName?issuerName=" + txtIssuerSearch.Text);
+            string search = GetSearchURI();
+            string json = webClient.DownloadString(customerSearchURI + search);
             List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
             bondData.Items.Clear();
             foreach (Bond temp in searchResult)
@@ -154,6 +150,37 @@ namespace bondCrunchersUI
         private void TestConnection(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void IPChanged(object sender, TextChangedEventArgs e)
+        {
+            IP = "http://"+txtIP.Text;
+            restURI = IP + "/EBondTraderWeb/rest/bond";
+            transactionURI = IP + "/EBondTraderWeb/rest/bond/transhis";
+            searchURI = IP + "/EBondTraderWeb/rest/bond/allBondsBy";
+            customerSearchURI = IP + "/EBondTraderWeb/rest/bond/allBondsByCustomSearch";
+        }
+
+        private void ClearBonds(object sender, RoutedEventArgs e)
+        {
+            bondList.Clear();
+            bondData.Items.Clear();
+        }
+
+        private string GetSearchURI()
+        {
+            string search = "?";
+            if(txtSearch.Text != "")
+                search += ("isin="+txtSearch.Text);
+            if (cmbCoupon.Text != "Any")
+            {
+                search += ("&couponPeriod="+cmbCoupon.Text);
+            }
+            if (txtIssuerSearch.Text != "")
+            {
+                search += ("&issuerName="+txtIssuerSearch.Text);
+            }
+            return search;
         }
     }
 }

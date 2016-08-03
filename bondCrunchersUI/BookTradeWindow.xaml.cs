@@ -27,8 +27,9 @@ namespace bondCrunchersUI
         }
 
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-        string transactionLogURI = "http://192.168.66.53:8080/EBondTraderWeb/rest/product/trans";
-        //string bondDataURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product?isin=";
+        static string IP = bondCrunchersUI.MainWindow.IP;
+        string transactionLogURI = IP+"/EBondTraderWeb/rest/product/trans";
+        //string bondDataURI = IP+ "/EBondTraderWeb/rest/product?isin=";
         WebClient web = new WebClient();
         Bond selectedBond = null;
 
@@ -165,7 +166,7 @@ namespace bondCrunchersUI
                 //MessageBox.Show(lastCoupon.ToShortDateString());
                 int numberOfDaysAccrued = (((DateTime)dtpTrade.SelectedDate).Subtract(lastCoupon)).Days;
                 //MessageBox.Show(numberOfDaysAccrued+"");
-                decimal accruedInterest = (decimal.Parse((numberOfDaysAccrued / 360.0).ToString()) * selectedBond.couponRate);
+                decimal accruedInterest = (decimal.Parse((numberOfDaysAccrued / 360.0).ToString()) * selectedBond.couponRate * faceValue)/100;
                 //MessageBox.Show(accruedInterest + "");
                 double dirtyPrice = cleanPrice + double.Parse(accruedInterest.ToString());
                 txtDirtyPrice.Text = String.Format("{0:C}", dirtyPrice);
