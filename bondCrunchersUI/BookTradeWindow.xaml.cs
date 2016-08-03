@@ -28,7 +28,7 @@ namespace bondCrunchersUI
 
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
         string transactionLogURI = "http://192.168.66.53:8080/EBondTraderWeb/rest/product/trans";
-        string bondDataURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product?isin=";
+        //string bondDataURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product?isin=";
         WebClient web = new WebClient();
         Bond selectedBond = null;
 
@@ -91,15 +91,8 @@ namespace bondCrunchersUI
                 txtDirtyPrice.IsEnabled = true;
                 if (selectedBond != null)
                 {
-                    decimal faceValue = (selectedBond.currentYield * selectedBond.lastPrice) / selectedBond.couponRate;
-                    decimal yield = decimal.Parse(txtTradeYield.Text);
-                    int numberOfYears = selectedBond.Maturity.Year - ((DateTime)(dtpTrade.SelectedDate)).Year;
-                    double numerator = 1 - Math.Pow(1+double.Parse(yield.ToString()), -numberOfYears);
-                    double denominator = 1 - Math.Pow(1+ double.Parse(yield.ToString()), -1);
-                    double extraFactor = double.Parse(faceValue.ToString()) * Math.Pow(1 + double.Parse(yield.ToString()), -numberOfYears);
-                    double presentValue = double.Parse((faceValue * selectedBond.couponRate).ToString()) * numerator / (denominator * (1 + double.Parse(yield.ToString())));
-                    txtCleanPrice.Text = (presentValue+extraFactor).ToString();
-                    txtDirtyPrice.Text = faceValue.ToString();
+                    CalculateCleanPrice();
+                    CalculateDirtyPrice();
                 }
                 else
                 {
@@ -115,6 +108,50 @@ namespace bondCrunchersUI
                 MessageBox.Show(fe+"");
             }
 
+        }
+
+        private void CalculateCleanPrice()
+        {
+            //Corrected
+            decimal faceValue = 100;//(selectedBond.currentYield * selectedBond.lastPrice) / selectedBond.couponRate;
+            int frequency = 1;
+            if (selectedBond.couponPeriod == "Semi-Annual")
+                frequency = 2;
+            else if (selectedBond.couponPeriod == "Quaterly")
+                frequency = 4;
+
+            decimal yield = decimal.Parse(txtTradeYield.Text) / (100*frequency);
+            int numberOfYears = selectedBond.Maturity.Year - ((DateTime)(dtpTrade.SelectedDate)).Year;
+            double numerator = 1 - Math.Pow(1 + double.Parse(yield.ToString()), -numberOfYears*frequency);
+            double denominator = double.Parse(yield.ToString());
+            double extraFactor = double.Parse(faceValue.ToString()) * Math.Pow(1 + double.Parse(yield.ToString()), -numberOfYears*frequency);
+            double presentValue = double.Parse((faceValue*selectedBond.couponRate/(100*frequency)).ToString())*(numerator/denominator);
+            txtCleanPrice.Text = String.Format("{0:C}" ,(presentValue + extraFactor));
+            txtDirtyPrice.Text = faceValue.ToString();
+        }
+
+        private void ChangeBond(object sender, EventArgs e)
+        {
+            selectedBond = bondCrunchersUI.MainWindow.bondList.Find(x => x.isin == cmbISIN.Text);
+        }
+
+        private void CalculateDirtyPrice()
+        {
+            if (selectedBond != null)
+            {
+                DateTime nextCoupon = new DateTime(selectedBond.Start.Ticks);
+                while (DateTime.Compare(nextCoupon, (DateTime)dtpTrade.SelectedDate) < 0)
+                {
+                    if (selectedBond.couponPeriod == "Annual")
+                        nextCoupon = nextCoupon.AddYears(1);
+                    else if (selectedBond.couponPeriod == "Semi-Annual")
+                        nextCoupon = nextCoupon.AddMonths(6);
+                    else if (selectedBond.couponPeriod == "Quaterly")
+                        nextCoupon = nextCoupon.AddMonths(3);
+                }
+
+                MessageBox.Show(nextCoupon.ToShortDateString());
+            }
         }
     }
 }

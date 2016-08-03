@@ -13,7 +13,7 @@
                 <Canvas>
                     <DataGrid x:Name="bondData" Height="438" Width="1110" HorizontalContentAlignment="Center" SelectionChanged="ChangeSelection" Canvas.Top="44">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding orderId}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True" />
                             <DataGridTextColumn Header="ISIN" Binding="{Binding isin}" IsReadOnly="True" />
                             <DataGridTextColumn Header="Issuer Name" Binding="{Binding issuerName}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Maturity Date" Binding="{Binding maturityShortDate}" IsReadOnly="True" />
@@ -26,7 +26,8 @@
                             <DataGridTextColumn Header="Last" Binding="{Binding lastPrice}" IsReadOnly="True" />
                             <DataGridTextColumn Header="Change" Binding="{Binding changePrice}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Yield" Binding="{Binding currentYield}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Fitch" Binding="{Binding fitch}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Piece Size" Binding="{Binding pieceSize}" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Fitch" Binding="{Binding fitch}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Moody's" Binding="{Binding moodys}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="SnP" Binding="{Binding snP}" IsReadOnly="True"/>
                         </DataGrid.Columns>
