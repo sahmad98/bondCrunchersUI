@@ -13,5 +13,6 @@ namespace bondCrunchersUI
     /// </summary>
     public partial class App : Application
     {
+        public List<Bond> bondList;
     }
 }
