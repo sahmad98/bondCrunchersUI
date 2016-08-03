@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
-
+using System.Web.Script.Serialization;
 namespace bondCrunchersUI
 {
     [DataContract]
@@ -13,15 +13,15 @@ namespace bondCrunchersUI
     {
         [DataMember]
         public int orderId { get; set; }
-        [IgnoreDataMember]
+        [ScriptIgnore]
         public DateTime timeStampLog { get; set; }
-        [IgnoreDataMember]
+        [ScriptIgnore]
         private DateTime settlementDateLog { get; set;}
-        [IgnoreDataMember]
+        [ScriptIgnore]
         private DateTime tradeDateLog { get; set; }
-        [IgnoreDataMember]
+        [ScriptIgnore]
         public string tradeDateShort { get; set; }
-        [IgnoreDataMember]
+        [ScriptIgnore]
         public string settlementDateShort { get; set; }
 
         public void ConvertDates()

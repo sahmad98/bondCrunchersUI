@@ -32,5 +32,7 @@ namespace bondCrunchersUI
         public decimal tradeYield { get; set; }
         [DataMember]
         public int quantity { get; set; }
+        [DataMember]
+        public string status { get; set; }
     }
 }

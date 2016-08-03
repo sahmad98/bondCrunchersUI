@@ -16,7 +16,7 @@ using System.Net;
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Web.Script.Serialization;
-
+using System.Windows.Threading;
 namespace bondCrunchersUI
 {
     /// <summary>
@@ -38,11 +38,6 @@ namespace bondCrunchersUI
         public static List<Bond> bondList = null;
         public static string selectedBond = "";
         WebClient webClient = new WebClient();
-
-        private void Setup(object sender, RoutedEventArgs e)
-        {
-            
-        }
 
         private void LoadBonds(object sender, RoutedEventArgs e)
         {
@@ -153,7 +148,18 @@ namespace bondCrunchersUI
 
         private void TestConnection(object sender, RoutedEventArgs e)
         {
-            
+            try
+            {
+                if (webClient.DownloadString(restURI + "/test") != "Connection Done")
+                    throw new Exception();
+                statusLabel.Content = "Status: Connection successful";
+                MessageBox.Show("Connection Successful.");
+            }
+            catch(Exception)
+            {
+                statusLabel.Content = "Status: Connection failed.";
+                MessageBox.Show("Connection failed.");
+            }
         }
 
         private void IPChanged(object sender, TextChangedEventArgs e)
@@ -163,6 +169,7 @@ namespace bondCrunchersUI
             transactionURI = IP + "/EBondTraderWeb/rest/bond/transhis";
             searchURI = IP + "/EBondTraderWeb/rest/bond/allBondsBy";
             customerSearchURI = IP + "/EBondTraderWeb/rest/bond/allBondsByCustomSearch";
+            statusLabel.Content = "Status: Connection not tested";
         }
 
         private void ClearBonds(object sender, RoutedEventArgs e)
@@ -332,6 +339,24 @@ namespace bondCrunchersUI
             {
                 AddToGrid(temp);
             }
+        }
+
+
+        private void CancelOrder(object sender, RoutedEventArgs e)
+        {
+            if (transactionHistory.SelectedIndex != -1)
+            {
+                Transaction selectedTransaction = (Transaction)transactionHistory.SelectedItem;
+                webClient.Headers.Clear();
+                webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                string json = jsonSerializer.Serialize(selectedTransaction);
+                MessageBox.Show(json);
+                webClient.UploadString(restURI + "/cancelOrder", "PUT", json);
+            }
+        }
+        private void Setup(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

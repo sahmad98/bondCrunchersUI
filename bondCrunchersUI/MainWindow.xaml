@@ -47,7 +47,7 @@
                     <Label x:Name="label3" Content="Coupon Period:" Canvas.Left="250" Canvas.Top="32"/>
                     <Label x:Name="label4" Content="Issuer Name:" Canvas.Left="479" Canvas.Top="32"/>
                     <TextBox x:Name="txtIssuerSearch" Height="23" Canvas.Left="566" TextWrapping="Wrap" Canvas.Top="34" Width="120" TextChanged="SearchIssuer"/>
-                    <Label x:Name="statusLabel" Content="Status: " Canvas.Left="10" Canvas.Top="487"/>
+                    <Label x:Name="statusLabel" Content="Status: " Canvas.Left="10" Canvas.Top="485" FontWeight="Bold"/>
                     <Label x:Name="label5" Content="Connection" Canvas.Top="-1" FontWeight="Bold"/>
                     <Label x:Name="label6" Content="http://" Canvas.Left="86" Canvas.Top="-1"/>
                     <TextBox x:Name="txtIP" Height="23" Canvas.Left="130" TextWrapping="Wrap" Canvas.Top="4" Width="340" TextChanged="IPChanged" Text="192.168.66.53:8080"/>
@@ -87,9 +87,11 @@
                             <DataGridTextColumn Header="Quantity" Binding="{Binding quantity}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Accrued Amount" Binding="{Binding accruedAmount}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Settlement Amount" Binding="{Binding settlementAmount}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Status" Binding="{Binding status}" IsReadOnly="True"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button x:Name="btnRefreshTransaction" Content="Refresh" Canvas.Left="1110" Canvas.Top="488" Width="75" Click="RefreshTransaction"/>
+                    <Button x:Name="btnRefreshTransaction" Content="Refresh" Canvas.Left="1010" Canvas.Top="488" Width="75" Click="RefreshTransaction"/>
+                    <Button x:Name="btnCancelOrder" Content="Cancel Order" Canvas.Left="1090" Canvas.Top="488" Width="92" Click="CancelOrder"/>
 
                 </Canvas>
             </TabItem>
