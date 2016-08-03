@@ -28,7 +28,7 @@ namespace bondCrunchersUI
 
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
         static string IP = bondCrunchersUI.MainWindow.IP;
-        string transactionLogURI = IP+"/EBondTraderWeb/rest/product/trans";
+        string transactionLogURI = IP+"/EBondTraderWeb/rest/bond/trans";
         //string bondDataURI = IP+ "/EBondTraderWeb/rest/product?isin=";
         WebClient web = new WebClient();
         Bond selectedBond = null;
@@ -40,8 +40,6 @@ namespace bondCrunchersUI
                 cmbISIN.Items.Add(temp.isin);              
             }
             cmbISIN.SelectedItem = bondCrunchersUI.MainWindow.selectedBond;
-            txtSettlemetAmount.Text = "123";
-            txtAccruedAmount.Text = "12.33";
             //string response = web.DownloadString(bondDataURI+cmbISIN.SelectedItem);
             //selectedBond = (Bond)jsonSerializer.Deserialize(response, typeof(Bond));
             selectedBond = bondCrunchersUI.MainWindow.bondList.Find(x => x.isin == (string)cmbISIN.SelectedItem);
@@ -73,14 +71,15 @@ namespace bondCrunchersUI
         private void getData(Transaction newTransaction)
         {
             newTransaction.isin = (string)cmbISIN.SelectedItem;
-            newTransaction.settlementDate = (long)((DateTime)dtpSettlement.SelectedDate - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
+            newTransaction.settlementDate = (long)(((DateTime)dtpTrade.SelectedDate).AddDays(2) - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
             newTransaction.timeStamp = (long)(DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
             newTransaction.tradeDate = (long)((DateTime)dtpTrade.SelectedDate - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
-            newTransaction.settlementAmount = decimal.Parse(txtSettlemetAmount.Text);
+            newTransaction.settlementAmount = decimal.Parse(settlementPrice.ToString());
             newTransaction.tradeYield = decimal.Parse(txtTradeYield.Text);
-            newTransaction.accruedAmount = decimal.Parse(txtAccruedAmount.Text);
-            newTransaction.cleanPrice = decimal.Parse(txtCleanPrice.Text);
-            newTransaction.dirtyPrice = decimal.Parse(txtDirtyPrice.Text);
+            newTransaction.accruedAmount = decimal.Parse(accruedInterest.ToString());
+            newTransaction.cleanPrice = decimal.Parse(cleanPrice.ToString());
+            newTransaction.dirtyPrice = decimal.Parse(dirtyPrice.ToString());
+            newTransaction.quantity = int.Parse(txtQuantity.Text);
        }
 
         private void EnableFields(object sender, TextChangedEventArgs e)
@@ -100,7 +99,7 @@ namespace bondCrunchersUI
                     txtCleanPrice.Text = "NULL";
                 }
             }
-            catch (FormatException fe)
+            catch (FormatException)
             {
                 txtCleanPrice.IsEnabled = false;
                 txtDirtyPrice.IsEnabled = false;
@@ -112,10 +111,13 @@ namespace bondCrunchersUI
         }
         decimal faceValue = 100;
         double cleanPrice = 0;
+        double dirtyPrice = 0;
+        decimal accruedInterest = 0;
+        double settlementPrice = 0;
         private void CalculateCleanPrice()
         {
             //Corrected
-            faceValue = (selectedBond.currentYield * selectedBond.lastPrice) / selectedBond.couponRate;
+            //faceValue = (selectedBond.currentYield * selectedBond.lastPrice) / selectedBond.couponRate;
             int frequency = 1;
             if (selectedBond.couponPeriod == "Semi-Annual")
                 frequency = 2;
@@ -134,8 +136,15 @@ namespace bondCrunchersUI
 
         private void ChangeBond(object sender, EventArgs e)
         {
-            selectedBond = bondCrunchersUI.MainWindow.bondList.Find(x => x.isin == cmbISIN.Text);
-        }
+            try
+            {
+                selectedBond = bondCrunchersUI.MainWindow.bondList.Find(x => x.isin == cmbISIN.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error Occured: Bond list empty.");
+            }
+       }
 
         private void CalculateDirtyPrice()
         {
@@ -166,10 +175,24 @@ namespace bondCrunchersUI
                 //MessageBox.Show(lastCoupon.ToShortDateString());
                 int numberOfDaysAccrued = (((DateTime)dtpTrade.SelectedDate).Subtract(lastCoupon)).Days;
                 //MessageBox.Show(numberOfDaysAccrued+"");
-                decimal accruedInterest = (decimal.Parse((numberOfDaysAccrued / 360.0).ToString()) * selectedBond.couponRate * faceValue)/100;
+                accruedInterest = (decimal.Parse((numberOfDaysAccrued / 360.0).ToString()) * selectedBond.couponRate * faceValue)/100;
                 //MessageBox.Show(accruedInterest + "");
-                double dirtyPrice = cleanPrice + double.Parse(accruedInterest.ToString());
+                dirtyPrice = cleanPrice + double.Parse(accruedInterest.ToString());
                 txtDirtyPrice.Text = String.Format("{0:C}", dirtyPrice);
+                txtAccruedAmount.Text = String.Format("{0:C}", accruedInterest);
+          }
+        }
+
+        private void QuantityChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                settlementPrice = double.Parse(dirtyPrice.ToString()) * int.Parse(txtQuantity.Text);
+                txtSettlemetAmount.Text = String.Format("{0:C}", settlementPrice);
+            }
+            catch (FormatException)
+            {
+                txtSettlemetAmount.Text = "Enter Integer Quantity";
             }
         }
     }

@@ -66,8 +66,11 @@ namespace bondCrunchersUI
         private void BookTrade(object sender, RoutedEventArgs e)
         {
             BookTradeWindow tradeWindow = new BookTradeWindow();
-            tradeWindow.ShowDialog();
-            
+            bool? success = tradeWindow.ShowDialog();
+            if (success == true)
+                MessageBox.Show("Trade added to queue.");
+            else
+                MessageBox.Show("Trade cancelled.");            
         }
 
         private void ChangeSelection(object sender, SelectionChangedEventArgs e)
@@ -78,6 +81,7 @@ namespace bondCrunchersUI
 
         private void RefreshTransaction(object sender, RoutedEventArgs e)
         {
+            transactionHistory.Items.Clear();
             string json = webClient.DownloadString(transactionURI);
             List<TransactionLog> transactionList = (List<TransactionLog>)jsonSerializer.Deserialize(json, typeof(List<TransactionLog>));
             foreach (TransactionLog temp in transactionList)
@@ -149,7 +153,7 @@ namespace bondCrunchersUI
 
         private void TestConnection(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void IPChanged(object sender, TextChangedEventArgs e)
@@ -192,6 +196,24 @@ namespace bondCrunchersUI
                         search += ("&fitch="+cmbRatingSymbol.Text);
                 }
             }
+            if (cmbYield.SelectedIndex != -1)
+            {
+                if(cmbYield.Text == "0-1%")
+                    search += ("&currentYield=0");
+                if(cmbYield.Text == "1-2%")
+                    search += ("&currentYield=1");
+                if(cmbYield.Text == "2-3%")
+                    search += ("&currentYield=2");
+                if (cmbYield.Text == "3-4%")
+                    search += ("&currentYield=3");
+                if (cmbYield.Text == "4-5%")
+                    search += ("&currentYield=4");
+                if (cmbYield.Text == "5-6%")
+                    search += ("&currentYield=5");
+                if (cmbYield.Text == "6-7%")
+                    search += ("&currentYield=7");
+            }
+            search = search.Replace("+", "%2B");
             return search;
         }
 
@@ -284,7 +306,7 @@ namespace bondCrunchersUI
         private void SearchRatingChanged(object sender, EventArgs e)
         {
             string search = GetSearchURI();
-            MessageBox.Show(search);
+            //MessageBox.Show(search);
             string json = webClient.DownloadString(customerSearchURI + search);
             List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
             bondData.Items.Clear();
@@ -297,6 +319,19 @@ namespace bondCrunchersUI
         private void DoubleClickTrade(object sender, MouseButtonEventArgs e)
         {
             BookTrade(sender, new RoutedEventArgs());
+        }
+
+        private void YieldChanged(object sender, EventArgs e)
+        {
+            string search = GetSearchURI();
+            //MessageBox.Show(search);
+            string json = webClient.DownloadString(customerSearchURI + search);
+            List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
+            bondData.Items.Clear();
+            foreach (Bond temp in searchResult)
+            {
+                AddToGrid(temp);
+            }
         }
     }
 }

@@ -30,5 +30,7 @@ namespace bondCrunchersUI
         public decimal settlementAmount { get; set; }
         [DataMember]
         public decimal tradeYield { get; set; }
+        [DataMember]
+        public int quantity { get; set; }
     }
 }
