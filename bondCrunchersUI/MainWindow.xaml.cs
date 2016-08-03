@@ -60,7 +60,7 @@ namespace bondCrunchersUI
             {
                 MessageBox.Show(ie + "");
             }
-            MessageBox.Show(IP);
+            //MessageBox.Show(IP);
         }
 
         private void BookTrade(object sender, RoutedEventArgs e)
@@ -172,7 +172,7 @@ namespace bondCrunchersUI
             string search = "?";
             if(txtSearch.Text != "")
                 search += ("isin="+txtSearch.Text);
-            if (cmbCoupon.Text != "Any")
+            if (cmbCoupon.SelectedIndex != -1)
             {
                 search += ("&couponPeriod="+cmbCoupon.Text);
             }
@@ -180,7 +180,123 @@ namespace bondCrunchersUI
             {
                 search += ("&issuerName="+txtIssuerSearch.Text);
             }
+            if (cmbRating.SelectedIndex != -1)
+            {
+                if (cmbRatingSymbol.SelectedIndex != -1)
+                {
+                    if (cmbRating.Text == "Moody's")
+                        search += ("&moodys=" + cmbRatingSymbol.Text);
+                    else if (cmbRating.Text == "SnP")
+                        search += ("&snp=" + cmbRatingSymbol.Text);
+                    else if (cmbRating.Text == "Fitch")
+                        search += ("&fitch="+cmbRatingSymbol.Text);
+                }
+            }
             return search;
+        }
+
+        private void PopulateRatings(object sender, EventArgs e)
+        {
+            if (cmbRating.SelectedIndex != -1)
+            {
+                if (cmbRating.Text == "Moody's")
+                    PopulateMoody();
+                else if (cmbRating.Text == "SnP")
+                    PopulateSnP();
+                else if (cmbRating.Text == "Fitch")
+                    PopulateFitch();
+            }
+        }
+
+        private void PopulateMoody()
+        {
+            cmbRatingSymbol.Items.Clear();
+            cmbRatingSymbol.Items.Add("A1");
+            cmbRatingSymbol.Items.Add("A2");
+            cmbRatingSymbol.Items.Add("A3");
+            cmbRatingSymbol.Items.Add("Aa1");
+            cmbRatingSymbol.Items.Add("Aa2");
+            cmbRatingSymbol.Items.Add("Aa3");
+            cmbRatingSymbol.Items.Add("Aaa");
+            cmbRatingSymbol.Items.Add("B1");
+            cmbRatingSymbol.Items.Add("B2");
+            cmbRatingSymbol.Items.Add("B3");
+            cmbRatingSymbol.Items.Add("Ba1");
+            cmbRatingSymbol.Items.Add("Ba2");
+            cmbRatingSymbol.Items.Add("Ba3");
+            cmbRatingSymbol.Items.Add("Baa1");
+            cmbRatingSymbol.Items.Add("Baa2");
+            cmbRatingSymbol.Items.Add("Baa3");
+            cmbRatingSymbol.Items.Add("Ca");
+            cmbRatingSymbol.Items.Add("Caa1");
+            cmbRatingSymbol.Items.Add("Caa2");
+            cmbRatingSymbol.Items.Add("Caa3");
+            cmbRatingSymbol.Items.Add("WR");
+        }
+
+        private void PopulateSnP()
+        {
+            cmbRatingSymbol.Items.Clear();
+            cmbRatingSymbol.Items.Add("AAA");
+            cmbRatingSymbol.Items.Add("AA+");
+            cmbRatingSymbol.Items.Add("AA");
+            cmbRatingSymbol.Items.Add("AA-");
+            cmbRatingSymbol.Items.Add("A");
+            cmbRatingSymbol.Items.Add("A-");
+            cmbRatingSymbol.Items.Add("BBB+");
+            cmbRatingSymbol.Items.Add("BBB");
+            cmbRatingSymbol.Items.Add("BBB-");
+            cmbRatingSymbol.Items.Add("BB+");
+            cmbRatingSymbol.Items.Add("BB");
+            cmbRatingSymbol.Items.Add("BB-");
+            cmbRatingSymbol.Items.Add("B+");
+            cmbRatingSymbol.Items.Add("B");
+            cmbRatingSymbol.Items.Add("B-");
+            cmbRatingSymbol.Items.Add("CCC+");
+            cmbRatingSymbol.Items.Add("CCC");
+            cmbRatingSymbol.Items.Add("CCC-");
+            cmbRatingSymbol.Items.Add("D");
+        }
+
+        private void PopulateFitch()
+        {
+            cmbRatingSymbol.Items.Clear();
+            cmbRatingSymbol.Items.Add("AA+");
+            cmbRatingSymbol.Items.Add("AA");
+            cmbRatingSymbol.Items.Add("AA-");
+            cmbRatingSymbol.Items.Add("A+");
+            cmbRatingSymbol.Items.Add("A");
+            cmbRatingSymbol.Items.Add("A-");
+            cmbRatingSymbol.Items.Add("BBB+");
+            cmbRatingSymbol.Items.Add("BBB");
+            cmbRatingSymbol.Items.Add("BBB-");
+            cmbRatingSymbol.Items.Add("BB+");
+            cmbRatingSymbol.Items.Add("BB");
+            cmbRatingSymbol.Items.Add("B+");
+            cmbRatingSymbol.Items.Add("B");
+            cmbRatingSymbol.Items.Add("B-");
+            cmbRatingSymbol.Items.Add("CCC+");
+            cmbRatingSymbol.Items.Add("CC");
+            cmbRatingSymbol.Items.Add("WD");
+
+        }
+
+        private void SearchRatingChanged(object sender, EventArgs e)
+        {
+            string search = GetSearchURI();
+            MessageBox.Show(search);
+            string json = webClient.DownloadString(customerSearchURI + search);
+            List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
+            bondData.Items.Clear();
+            foreach (Bond temp in searchResult)
+            {
+                AddToGrid(temp);
+            }
+        }
+
+        private void DoubleClickTrade(object sender, MouseButtonEventArgs e)
+        {
+            BookTrade(sender, new RoutedEventArgs());
         }
     }
 }
