@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:bondCrunchersUI"
         mc:Ignorable="d"
-        Title="EBond Trader" Height="621.053" Width="791.474" Loaded="Setup">
+        Title="EBond Trader" Height="621.053" Width="791.474" Loaded="Setup" ResizeMode="NoResize">
     <Canvas>
         <Label x:Name="label" Content="Bond Management" Canvas.Left="7" Canvas.Top="3" FontSize="16"/>
         <TabControl x:Name="tabControl" Height="552" Canvas.Top="39" Width="783">
             <TabItem Header="Bond Listing">
                 <Canvas>
-                    <DataGrid x:Name="bondData" Height="482" Width="773">
+                    <DataGrid x:Name="bondData" Height="482" Width="773" HorizontalContentAlignment="Center" SelectionChanged="ChangeSelection">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="ISIN" Binding="{Binding isin}" IsReadOnly="True" />
@@ -29,8 +29,8 @@
                         </DataGrid.Columns>
 
                     </DataGrid>
-                    <Button x:Name="btnLoad" Content="Load Bonds" Canvas.Left="532" Canvas.Top="490" Width="75" Click="LoadBonds" />
-                    <Button x:Name="btnBook" Content="Book Trade" Canvas.Left="614" Canvas.Top="490" Width="75"/>
+                    <Button x:Name="btnLoad" Content="Load Bonds" Canvas.Left="602" Canvas.Top="490" Width="75" Click="LoadBonds" />
+                    <Button x:Name="btnBook" Content="Book Trade" Canvas.Left="686" Canvas.Top="490" Width="75" Click="BookTrade"/>
 
                 </Canvas>
             </TabItem>

@@ -59,8 +59,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Bond.cs" />
-    <Compile Include="StringStream.cs" />
+    <Compile Include="BookTradeWindow.xaml.cs">
+      <DependentUpon>BookTradeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TestClass.cs" />
+    <Compile Include="Transaction.cs" />
+    <Page Include="BookTradeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -31,8 +31,8 @@ namespace bondCrunchersUI
 
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
         string restURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product";
-        List<Bond> bondList = null;
-
+        public static List<Bond> bondList = null;
+        public static string selectedBond = "";
         private void Setup(object sender, RoutedEventArgs e)
         {
             
@@ -54,6 +54,18 @@ namespace bondCrunchersUI
             {
                 MessageBox.Show(ie + "");
             }
+        }
+
+        private void BookTrade(object sender, RoutedEventArgs e)
+        {
+            BookTradeWindow tradeWindow = new BookTradeWindow();
+            tradeWindow.ShowDialog();
+            
+        }
+
+        private void ChangeSelection(object sender, SelectionChangedEventArgs e)
+        {
+            selectedBond = ((Bond)bondData.SelectedItem).isin;
         }
     }
 }

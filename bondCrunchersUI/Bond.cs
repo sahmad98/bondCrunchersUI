@@ -24,7 +24,7 @@ namespace bondCrunchersUI
         [DataMember]
         public int bond_Duration { get; set; }
         [DataMember]
-        public double coupon_Rate { get; set; }
+        public decimal coupon_Rate { get; set; }
         [DataMember]
         public string coupon_Period { get; set; }
         [DataMember]
@@ -39,6 +39,11 @@ namespace bondCrunchersUI
         public decimal yield { get;  set;}
 
         //public string Image = "th.png";
+
+        public override string ToString()
+        {
+            return isin;
+        }
     }
 
 }
