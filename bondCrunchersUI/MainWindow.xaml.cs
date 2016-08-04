@@ -17,6 +17,7 @@ using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Web.Script.Serialization;
 using System.Windows.Threading;
+
 namespace bondCrunchersUI
 {
     /// <summary>
@@ -35,19 +36,26 @@ namespace bondCrunchersUI
         string transactionURI = ""; // IP+"/EBondTraderWeb/rest/bond/transhis";
         string searchURI = ""; // IP+"/EBondTraderWeb/rest/bond/allBondsBy";
         string customerSearchURI = ""; // IP + "/EBondTraderWeb/rest/bond/allBondsByCustomSearch";
-
+        
         public static List<Bond> bondList = null;
         public static string selectedBond = "";
         WebClient webClient = new WebClient();
         
         private void LoadBonds(object sender, RoutedEventArgs e)
         {
-            bondList = GetJsonObjects(restURI);
-            bondData.Items.Clear();
-            foreach (Bond temp in bondList)
+            try
             {
-                temp.ConvertDates();
-                bondData.Items.Add(temp);
+                bondList = GetJsonObjects(restURI);
+                bondData.Items.Clear();
+                foreach (Bond bond in bondList)
+                {
+                    bond.ConvertDates();
+                    bondData.Items.Add(bond);
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
@@ -72,9 +80,9 @@ namespace bondCrunchersUI
             BookTradeWindow tradeWindow = new BookTradeWindow();
             bool? success = tradeWindow.ShowDialog();
             if (success == true)
-                MessageBox.Show("Trade added to queue.");
+                statusLabel.Content = "Status: Last trade added to queue";
             else
-                MessageBox.Show("Trade cancelled.");            
+                statusLabel.Content = "Status: Last trade cancelled";            
         }
 
         private void ChangeSelection(object sender, SelectionChangedEventArgs e)
@@ -86,12 +94,20 @@ namespace bondCrunchersUI
         private void RefreshTransaction(object sender, RoutedEventArgs e)
         {
             transactionHistory.Items.Clear();
-            string json = webClient.DownloadString(transactionURI);
-            List<TransactionLog> transactionList = (List<TransactionLog>)jsonSerializer.Deserialize(json, typeof(List<TransactionLog>));
-            foreach (TransactionLog temp in transactionList)
+            try
             {
-                temp.ConvertDates();
-                transactionHistory.Items.Add(temp);
+                string json = webClient.DownloadString(transactionURI);
+                List<TransactionLog> transactionList = (List<TransactionLog>)jsonSerializer.Deserialize(json, typeof(List<TransactionLog>));
+                //List<TransactionLog> transactionList = GetJsonObjects(transactionURI);
+                foreach (TransactionLog transaction in transactionList)
+                {
+                    transaction.ConvertDates();
+                    transactionHistory.Items.Add(transaction);
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
@@ -122,11 +138,6 @@ namespace bondCrunchersUI
         private void CouponPeriodChanged(object sender, EventArgs e)
         {
             string search = GetSearchURI();
-            /*if (cmbCoupon.Text == "Any")
-                search = null;
-            else
-                search = cmbCoupon.Text;
-            */
             string json = webClient.DownloadString(customerSearchURI +  search);
             List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
             bondData.Items.Clear();
@@ -162,12 +173,12 @@ namespace bondCrunchersUI
                 if (webClient.DownloadString(restURI + "/test") != "Connection Done")
                     throw new Exception();
                 statusLabel.Content = "Status: Connection successful";
-                MessageBox.Show("Connection Successful.");
+                //MessageBox.Show("Connection Successful.");
             }
             catch(Exception)
             {
                 statusLabel.Content = "Status: Connection failed.";
-                MessageBox.Show("Connection failed.");
+                //MessageBox.Show("Connection failed.");
             }
         }
 
@@ -183,8 +194,11 @@ namespace bondCrunchersUI
 
         private void ClearBonds(object sender, RoutedEventArgs e)
         {
-            bondList.Clear();
-            bondData.Items.Clear();
+            if (bondList != null)
+            {
+                bondList.Clear();
+                bondData.Items.Clear();
+            }
         }
 
         private string GetSearchURI()
@@ -359,13 +373,54 @@ namespace bondCrunchersUI
                 webClient.Headers.Clear();
                 webClient.Headers.Add(HttpRequestHeader.ContentType, "application/json");
                 string json = jsonSerializer.Serialize(selectedTransaction);
-                MessageBox.Show(json);
+                //MessageBox.Show(json);
                 webClient.UploadString(restURI + "/cancelOrder", "PUT", json);
             }
+            RefreshTransaction(sender, e);
         }
         private void Setup(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void SearchTransactionISIN(object sender, TextChangedEventArgs e)
+        {
+            string search = GetTransactionSearchURI();
+            try
+            {
+                string json = webClient.DownloadString(restURI + "/transactionSearch"+search);
+                List<TransactionLog> transactionList = (List<TransactionLog>)jsonSerializer.Deserialize(json, typeof(List<TransactionLog>));
+                //List<TransactionLog> transactionList = GetJsonObjects(transactionURI);
+                transactionHistory.Items.Clear();
+                foreach (TransactionLog transaction in transactionList)
+                {
+                    transaction.ConvertDates();
+                    transactionHistory.Items.Add(transaction);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private string GetTransactionSearchURI()
+        {
+            string search = "?";
+            if (txtTransISIN.Text != "")
+            {
+                search += ("isin="+txtTransISIN.Text);
+            }
+            if (txtCustomerID.Text != "")
+            {
+                search += ("&customerId="+txtCustomerID.Text);
+            }
+            return search;
+        }
+
+        private void SearchTransactionCustomerID(object sender, TextChangedEventArgs e)
+        {
+            SearchTransactionISIN(sender, e);
         }
     }
 }

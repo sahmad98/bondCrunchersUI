@@ -34,5 +34,7 @@ namespace bondCrunchersUI
         public int quantity { get; set; }
         [DataMember]
         public string status { get; set; }
+        [DataMember]
+        public string customerId { get; set; }
     }
 }

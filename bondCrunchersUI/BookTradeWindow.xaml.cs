@@ -47,19 +47,28 @@ namespace bondCrunchersUI
 
         private void BookTrade(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            Transaction newTransaction = new Transaction();
-            getData(newTransaction);
             try
             {
-                string json = jsonSerializer.Serialize(newTransaction);
-                web.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-                web.UploadString(transactionLogURI, "POST", json);
+                string result = web.DownloadString(IP + "/EBondTraderWeb/rest/bond/customerCheck?customerId=" + txtCustomer.Text);
+                if (result == "yes")
+                {
+                    DialogResult = true;
+                    Transaction newTransaction = new Transaction();
+                    getData(newTransaction);
+                    string json = jsonSerializer.Serialize(newTransaction);
+                    web.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                    web.UploadString(transactionLogURI, "POST", json);
+                }
+                else
+                {
+                    MessageBox.Show("Customer not found.");
+                }
             }
             catch (Exception ie)
             {
-                MessageBox.Show("Error Occured. " + ie);
+                MessageBox.Show(ie + "");
             }
+            
         }
 
         private void CancelTrade(object sender, RoutedEventArgs e)
@@ -81,6 +90,7 @@ namespace bondCrunchersUI
             newTransaction.dirtyPrice = decimal.Parse(dirtyPrice.ToString());
             newTransaction.quantity = int.Parse(txtQuantity.Text);
             newTransaction.status = "Booked";
+            newTransaction.customerId = txtCustomer.Text;
        }
 
         private void EnableFields(object sender, TextChangedEventArgs e)
@@ -89,7 +99,7 @@ namespace bondCrunchersUI
             {
                 globalYield = double.Parse(txtTradeYield.Text);
                 txtCleanPrice.IsEnabled = true;
-                txtDirtyPrice.IsEnabled = true;
+                //txtDirtyPrice.IsEnabled = true;
                 if (selectedBond != null)
                 {
                     CalculateCleanPrice();
@@ -103,7 +113,7 @@ namespace bondCrunchersUI
             catch (FormatException)
             {
                 txtCleanPrice.IsEnabled = false;
-                txtDirtyPrice.IsEnabled = false;
+                //txtDirtyPrice.IsEnabled = false;
                 txtDirtyPrice.Text = "Please enter a numeric in trade";
                 txtCleanPrice.Text = "Please enter a numeric in trade";
                 //MessageBox.Show(fe+"");
@@ -298,8 +308,8 @@ namespace bondCrunchersUI
                 freq = 4;
             double coupon = double.Parse(selectedBond.couponRate.ToString());
             double precision = 0.001;
-            double high = 100.0;
-            double low = -105.0;
+            double high = 1000000.0;
+            double low = -1000050.0;
             double y = (high + low) / 2;
             double clean = double.Parse(txtCleanPrice.Text);
             double guessCleanPrice = CleanPrice(y, years, freq, 100, coupon);

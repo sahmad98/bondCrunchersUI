@@ -5,16 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:bondCrunchersUI"
         mc:Ignorable="d"
-        Title="EBond Trader" Height="621.053" Width="1221.974" Loaded="Setup" ResizeMode="NoResize" FontSize="13.333">
+        Title="DigiBond" Height="621.053" Width="1221.974" Loaded="Setup" ResizeMode="NoResize" FontSize="13.333" Icon="C:\Users\Grad85\Desktop\bondCrunchersUI\icon.png">
     <Canvas>
-        <Label x:Name="label" Content="Bond Management" Canvas.Left="7" Canvas.Top="3" FontSize="18"/>
+        <Image x:Name="image" Height="60" Canvas.Left="1108" Canvas.Top="4" Width="92" Source="C:\Users\Grad85\Desktop\bondCrunchersUI\icon.png"/>
+        <Label x:Name="label" Content="Bond Trading Application" Canvas.Left="7" Canvas.Top="3" FontSize="18"/>
         <TabControl x:Name="tabControl" Height="552" Canvas.Top="39" Width="1216">
             <TabItem Header="Bond Listing">
                 <Canvas>
+                    <Canvas.OpacityMask>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="Black" Offset="0"/>
+                            <GradientStop Color="White" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Canvas.OpacityMask>
                     <Canvas.Background>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FF0080FF" Offset="1"/>
-                            <GradientStop Color="#FF6EB8FF"/>
+                            <GradientStop Color="#FF9ECFFF" Offset="1"/>
+                            <GradientStop Color="#FFC4E2FF"/>
                         </LinearGradientBrush>
                     </Canvas.Background>
                     <DataGrid x:Name="bondData" Height="419" Width="1206" HorizontalContentAlignment="Center" SelectionChanged="ChangeSelection" Canvas.Top="63" MouseDoubleClick="DoubleClickTrade">
@@ -79,11 +86,18 @@
                 </Canvas>
             </TabItem>
             <TabItem Header="Transaction History">
-                <Canvas Background="#FFD8E1F3">
-                    <DataGrid x:Name="transactionHistory" Height="482" Width="1206">
+                <Canvas>
+                    <Canvas.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF9ECFFF" Offset="1"/>
+                            <GradientStop Color="#FFC4E2FF"/>
+                        </LinearGradientBrush>
+                    </Canvas.Background>
+                    <DataGrid x:Name="transactionHistory" Height="445" Width="1206" Canvas.Top="37">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="OrderID" Binding="{Binding orderId}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Time Stamp" Binding="{Binding timeStampLog}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Customer ID" Binding="{Binding customerId}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="ISIN" Binding="{Binding isin}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Trade Date" Binding="{Binding tradeDateShort}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Settlement Date" Binding="{Binding settlementDateShort}" IsReadOnly="True"/>
@@ -98,6 +112,11 @@
                     </DataGrid>
                     <Button x:Name="btnRefreshTransaction" Content="Refresh" Canvas.Left="1010" Canvas.Top="488" Width="75" Click="RefreshTransaction"/>
                     <Button x:Name="btnCancelOrder" Content="Cancel Order" Canvas.Left="1090" Canvas.Top="488" Width="92" Click="CancelOrder"/>
+                    <Label x:Name="label9" Content="Transaction Search" Canvas.Left="10" Canvas.Top="4" FontWeight="Bold"/>
+                    <Label x:Name="label10" Content="ISIN:" Canvas.Left="140" Canvas.Top="4"/>
+                    <TextBox x:Name="txtTransISIN" Height="23" Canvas.Left="182" TextWrapping="Wrap" Canvas.Top="6" Width="176" TextChanged="SearchTransactionISIN"/>
+                    <Label x:Name="label11" Content="Customer ID: " Canvas.Left="376" Canvas.Top="4"/>
+                    <TextBox x:Name="txtCustomerID" Height="23" Canvas.Left="466" TextWrapping="Wrap" Canvas.Top="6" Width="201" TextChanged="SearchTransactionCustomerID"/>
 
                 </Canvas>
             </TabItem>
