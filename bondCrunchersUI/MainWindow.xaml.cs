@@ -28,6 +28,7 @@ namespace bondCrunchersUI
         {
             InitializeComponent();
         }
+
         public static string IP = "";
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
         string restURI = ""; // IP + "/EBondTraderWeb/rest/bond";
@@ -38,24 +39,32 @@ namespace bondCrunchersUI
         public static List<Bond> bondList = null;
         public static string selectedBond = "";
         WebClient webClient = new WebClient();
-
+        
         private void LoadBonds(object sender, RoutedEventArgs e)
         {
+            bondList = GetJsonObjects(restURI);
+            bondData.Items.Clear();
+            foreach (Bond temp in bondList)
+            {
+                temp.ConvertDates();
+                bondData.Items.Add(temp);
+            }
+        }
+
+        private List<Bond> GetJsonObjects(string URI)
+        {
+            List<Bond> resultList = null;
             try
             {
+                webClient.Proxy = null;
                 string json = webClient.DownloadString(restURI);
-                bondList = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
-                foreach (Bond temp in bondList)
-                {
-                    temp.ConvertDates();
-                    bondData.Items.Add(temp);
-                }
+                resultList = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
             }
-            catch(Exception ie)
+            catch (Exception ie)
             {
                 MessageBox.Show(ie + "");
             }
-            //MessageBox.Show(IP);
+            return resultList;
         }
 
         private void BookTrade(object sender, RoutedEventArgs e)

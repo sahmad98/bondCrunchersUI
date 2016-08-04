@@ -75,7 +75,7 @@ namespace bondCrunchersUI
             newTransaction.timeStamp = (long)(DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
             newTransaction.tradeDate = (long)((DateTime)dtpTrade.SelectedDate - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
             newTransaction.settlementAmount = decimal.Parse(settlementPrice.ToString());
-            newTransaction.tradeYield = decimal.Parse(txtTradeYield.Text);
+            newTransaction.tradeYield = decimal.Parse(globalYield.ToString());
             newTransaction.accruedAmount = decimal.Parse(accruedInterest.ToString());
             newTransaction.cleanPrice = decimal.Parse(cleanPrice.ToString());
             newTransaction.dirtyPrice = decimal.Parse(dirtyPrice.ToString());
@@ -84,10 +84,10 @@ namespace bondCrunchersUI
        }
 
         private void EnableFields(object sender, TextChangedEventArgs e)
-        {
+        {   
             try
             {
-
+                globalYield = double.Parse(txtTradeYield.Text);
                 txtCleanPrice.IsEnabled = true;
                 txtDirtyPrice.IsEnabled = true;
                 if (selectedBond != null)
@@ -115,6 +115,8 @@ namespace bondCrunchersUI
         double dirtyPrice = 0;
         decimal accruedInterest = 0;
         double settlementPrice = 0;
+        double globalYield = 0;
+
         private void CalculateCleanPrice()
         {
             //Corrected
@@ -124,17 +126,36 @@ namespace bondCrunchersUI
                 frequency = 2;
             else if (selectedBond.couponPeriod == "Quaterly")
                 frequency = 4;
-
-            decimal yield = decimal.Parse(txtTradeYield.Text) / (100*frequency);
-            int numberOfYears = selectedBond.Maturity.Year - ((DateTime)(dtpTrade.SelectedDate)).Year;
-            double numerator = 1 - Math.Pow(1 + double.Parse(yield.ToString()), -numberOfYears*frequency);
-            double denominator = double.Parse(yield.ToString());
-            double extraFactor = double.Parse(faceValue.ToString()) * Math.Pow(1 + double.Parse(yield.ToString()), -numberOfYears*frequency);
-            double presentValue = double.Parse((faceValue*selectedBond.couponRate/(100*frequency)).ToString())*(numerator/denominator);
-            cleanPrice = presentValue + extraFactor;
-            txtCleanPrice.Text = String.Format("{0:C}" ,cleanPrice);
+            //globalYield = double.Parse(txtTradeYield.ToString());
+            decimal yield = decimal.Parse(globalYield.ToString()) / (100*frequency);
+            if (yield == 0)
+                yield = decimal.Parse("0.00000001");
+            try
+            {
+                int numberOfYears = selectedBond.Maturity.Year - ((DateTime)(dtpTrade.SelectedDate)).Year;
+                double numerator = 1 - Math.Pow(1 + double.Parse(yield.ToString()), -numberOfYears * frequency);
+                double denominator = double.Parse(yield.ToString());
+                double extraFactor = double.Parse(faceValue.ToString()) * Math.Pow(1 + double.Parse(yield.ToString()), -numberOfYears * frequency);
+                double presentValue = double.Parse((faceValue * selectedBond.couponRate / (100 * frequency)).ToString()) * (numerator / denominator);
+                cleanPrice = presentValue + extraFactor;
+                txtCleanPrice.Text = cleanPrice.ToString("0.000");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please select a date.");
+            }
          }
 
+        private double CleanPrice(double tradeYield, int numberOfYears, int frequency, double faceValue, double couponRate)
+        {
+            double yield = tradeYield / (100 * frequency);
+            //int numberOfYears = selectedBond.Maturity.Year - ((DateTime)(dtpTrade.SelectedDate)).Year;
+            double numerator = 1 - Math.Pow(1 + yield, -numberOfYears * frequency*1.0);
+            double denominator = yield;
+            double extraFactor = faceValue * Math.Pow(1 + yield, -numberOfYears * frequency);
+            double presentValue = (faceValue * couponRate / (100 * frequency)) * (numerator / denominator);
+            return (presentValue + extraFactor);            
+        }
         private void ChangeBond(object sender, EventArgs e)
         {
             try
@@ -149,39 +170,46 @@ namespace bondCrunchersUI
 
         private void CalculateDirtyPrice()
         {
-            if (selectedBond != null)
+            try
             {
-                DateTime lastCoupon = new DateTime(selectedBond.Start.Ticks);
-                while (DateTime.Compare(lastCoupon, (DateTime)dtpTrade.SelectedDate) <= 0)
+                if (selectedBond != null)
                 {
+                    DateTime lastCoupon = new DateTime(selectedBond.Start.Ticks);
+                    while (DateTime.Compare(lastCoupon, (DateTime)dtpTrade.SelectedDate) <= 0)
+                    {
+                        if (selectedBond.couponPeriod == "Annual")
+                            lastCoupon = lastCoupon.AddYears(1);
+                        else if (selectedBond.couponPeriod == "Semi-Annual")
+                            lastCoupon = lastCoupon.AddMonths(6);
+                        else if (selectedBond.couponPeriod == "Quaterly")
+                            lastCoupon = lastCoupon.AddMonths(3);
+                    }
                     if (selectedBond.couponPeriod == "Annual")
-                        lastCoupon = lastCoupon.AddYears(1);
+                    {
+                        lastCoupon = lastCoupon.AddYears(-1);
+                    }
                     else if (selectedBond.couponPeriod == "Semi-Annual")
-                        lastCoupon = lastCoupon.AddMonths(6);
+                    {
+                        lastCoupon = lastCoupon.AddMonths(-6);
+                    }
                     else if (selectedBond.couponPeriod == "Quaterly")
-                        lastCoupon = lastCoupon.AddMonths(3);
+                    {
+                        lastCoupon = lastCoupon.AddMonths(-3);
+                    }
+                    //MessageBox.Show(lastCoupon.ToShortDateString());
+                    int numberOfDaysAccrued = (((DateTime)dtpTrade.SelectedDate).Subtract(lastCoupon)).Days;
+                    //MessageBox.Show(numberOfDaysAccrued+"");
+                    accruedInterest = (decimal.Parse((numberOfDaysAccrued / 360.0).ToString()) * selectedBond.couponRate * faceValue) / 100;
+                    //MessageBox.Show(accruedInterest + "");
+                    dirtyPrice = cleanPrice + double.Parse(accruedInterest.ToString());
+                    txtDirtyPrice.Text = String.Format("{0:C}", dirtyPrice);
+                    txtAccruedAmount.Text = String.Format("{0:C}", accruedInterest);
                 }
-                if (selectedBond.couponPeriod == "Annual")
-                {
-                    lastCoupon = lastCoupon.AddYears(-1);
-                }
-                else if (selectedBond.couponPeriod == "Semi-Annual")
-                {
-                    lastCoupon = lastCoupon.AddMonths(-6);
-                }
-                else if (selectedBond.couponPeriod == "Quaterly")
-                {
-                    lastCoupon = lastCoupon.AddMonths(-3);
-                }
-                //MessageBox.Show(lastCoupon.ToShortDateString());
-                int numberOfDaysAccrued = (((DateTime)dtpTrade.SelectedDate).Subtract(lastCoupon)).Days;
-                //MessageBox.Show(numberOfDaysAccrued+"");
-                accruedInterest = (decimal.Parse((numberOfDaysAccrued / 360.0).ToString()) * selectedBond.couponRate * faceValue)/100;
-                //MessageBox.Show(accruedInterest + "");
-                dirtyPrice = cleanPrice + double.Parse(accruedInterest.ToString());
-                txtDirtyPrice.Text = String.Format("{0:C}", dirtyPrice);
-                txtAccruedAmount.Text = String.Format("{0:C}", accruedInterest);
-          }
+            }
+            catch (Exception)
+            {
+                
+            }
         }
 
         private void QuantityChanged(object sender, TextChangedEventArgs e)
@@ -195,6 +223,107 @@ namespace bondCrunchersUI
             {
                 txtSettlemetAmount.Text = "Enter Integer Quantity";
             }
+        }
+
+
+        private void CalculateYield(object sender, TextChangedEventArgs e)
+        {
+            /*
+            int years = selectedBond.Maturity.Year - ((DateTime)(dtpTrade.SelectedDate)).Year;
+            int freq = 1;
+            if (selectedBond.couponPeriod == "Semi-Annual")
+                freq = 2;
+            else if (selectedBond.couponPeriod == "Quaterly")
+                freq = 4;
+            double coupon = double.Parse(selectedBond.couponRate.ToString());
+            double precision = 0.001;
+            double high = 100.0;
+            double low = 0.0;
+            double yield = (high+ low)/2;
+            double clean = double.Parse(txtCleanPrice.Text);
+            double guessCleanPrice = CleanPrice(yield, years, freq, 100, coupon);
+            while (Math.Abs(guessCleanPrice - clean) >= precision)
+            {
+                if (guessCleanPrice > clean)
+                {
+                    high = yield;
+                    yield = (low + high) / 2;
+                }
+                else
+                {
+                    low = yield;
+                    yield = (high + low) / 2;
+                }
+                guessCleanPrice = CleanPrice(yield, years, freq, 100, coupon);
+            }
+
+            MessageBox.Show(yield.ToString("0.00"));*/
+        }
+
+        private void CalculateClean(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+                txtCleanPrice.IsEnabled = true;
+                txtDirtyPrice.IsEnabled = true;
+                if (selectedBond != null)
+                {
+                    CalculateCleanPrice();
+                    CalculateDirtyPrice();
+                }
+                else
+                {
+                    txtCleanPrice.Text = "NULL";
+                }
+            }
+            catch (FormatException)
+            {
+                txtCleanPrice.IsEnabled = false;
+                txtDirtyPrice.IsEnabled = false;
+                txtDirtyPrice.Text = "Please enter a numeric in trade";
+                txtCleanPrice.Text = "Please enter a numeric in trade";
+                //MessageBox.Show(fe+"");
+
+            }
+        }
+
+        private void YieldCalculation(object sender, RoutedEventArgs e)
+        {
+            int years = selectedBond.Maturity.Year - ((DateTime)(dtpTrade.SelectedDate)).Year;
+            int freq = 1;
+            if (selectedBond.couponPeriod == "Semi-Annual")
+                freq = 2;
+            else if (selectedBond.couponPeriod == "Quaterly")
+                freq = 4;
+            double coupon = double.Parse(selectedBond.couponRate.ToString());
+            double precision = 0.001;
+            double high = 100.0;
+            double low = -105.0;
+            double y = (high + low) / 2;
+            double clean = double.Parse(txtCleanPrice.Text);
+            double guessCleanPrice = CleanPrice(y, years, freq, 100, coupon);
+            while (Math.Abs(guessCleanPrice - clean) >= precision)
+            {
+                
+                if (guessCleanPrice > clean)
+                {
+                    low = y;
+                    y = (low + high) / 2;
+                }
+                else
+                {
+                    high = y;
+                    y = (high + low) / 2;
+                }
+                
+                guessCleanPrice = CleanPrice(y, years, freq, 100, coupon);
+            }
+
+            globalYield = y;
+            dirtyPrice = clean + double.Parse(accruedInterest.ToString());
+            txtTradeYield.Text = globalYield.ToString("0.000");
+            txtDirtyPrice.Text = string.Format("{0:C}", dirtyPrice);
         }
     }
 }

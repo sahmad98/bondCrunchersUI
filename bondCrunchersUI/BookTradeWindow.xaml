@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:bondCrunchersUI"
         mc:Ignorable="d"
-        Title="Book Trade" Height="356.687" Width="345.113" ResizeMode="NoResize" Loaded="SetupTradeBooking">
+        Title="Book Trade" Height="356.687" Width="341.113" ResizeMode="NoResize" Loaded="SetupTradeBooking">
     <Canvas>
         <StackPanel Height="239" Width="119" Canvas.Left="10" Canvas.Top="10">
             <Label x:Name="label1" Content="ISIN:" HorizontalContentAlignment="Center"/>
@@ -22,9 +22,9 @@
             <ComboBox x:Name="cmbISIN" Margin="1.5" DropDownClosed="ChangeBond" />
             <DatePicker x:Name="dtpTrade" Margin="1.5" />
             <DatePicker x:Name="dtpSettlement" Margin="1.5" IsEnabled="False"/>
-            <TextBox x:Name="txtTradeYield" Margin="1.5" Height="23" TextWrapping="Wrap" TextChanged="EnableFields"/>
+            <TextBox x:Name="txtTradeYield" Margin="2,1.5" Height="24" TextWrapping="Wrap" TextChanged="EnableFields"/>
             <TextBox x:Name="txtQuantity" Margin="1.5" Height="23" TextWrapping="Wrap" TextChanged="QuantityChanged"/>
-            <TextBox x:Name="txtCleanPrice" Margin="1.5" Height="23" TextWrapping="Wrap" IsEnabled="False" />
+            <TextBox x:Name="txtCleanPrice" Margin="2,1.5,0,1.5" Height="22" TextWrapping="Wrap" HorizontalAlignment="Left" Width="83" />
             <TextBox x:Name="txtDirtyPrice" Margin="1.5" Height="23" TextWrapping="Wrap" IsEnabled="False" />
             <TextBox x:Name="txtAccruedAmount" Margin="1.5" Height="23" TextWrapping="Wrap" IsEnabled="False"/>
             <TextBox x:Name="txtSettlemetAmount" Height="23" TextWrapping="Wrap" Margin="1.5" IsEnabled="False"/>
@@ -32,6 +32,7 @@
         <Button x:Name="btnBookTrade" Content="Book Trade" Canvas.Left="55" Canvas.Top="262" Width="75" Click="BookTrade"/>
         <Button x:Name="btnCancelTrade" Content="Cancel" Canvas.Left="206" Canvas.Top="262" Width="75" Click="CancelTrade"/>
         <Label x:Name="label" Content="**Settlement Date is T+2" Canvas.Top="293"/>
+        <Button x:Name="btnYield" Content="Calculate Yield" Canvas.Left="220" Canvas.Top="144" Width="92" Click="YieldCalculation"/>
 
     </Canvas>
 </Window>
