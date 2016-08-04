@@ -46,7 +46,7 @@
                         </DataGrid.Columns>
 
                     </DataGrid>
-                    <Button x:Name="btnLoad" Content="Load Bonds" Canvas.Left="913" Canvas.Top="487" Width="84" Click="LoadBonds" />
+                    <Button x:Name="btnLoad" Content="Load Bonds" Canvas.Left="813" Canvas.Top="487" Width="84" Click="LoadBonds" />
                     <Button x:Name="btnBook" Content="Book Trade" Canvas.Left="1090" Canvas.Top="487" Width="94" Click="BookTrade"/>
                     <TextBox x:Name="txtSearch" Height="23" Canvas.Left="130" TextWrapping="Wrap" Canvas.Top="34" Width="120" TextChanged="SearchChanged"/>
                     <Button x:Name="btnTestConnection" Content="Test Connection" Canvas.Left="483" Canvas.Top="4" Width="107" Click="TestConnection"/>
@@ -82,6 +82,7 @@
                         <ComboBoxItem Content="6-7%" HorizontalAlignment="Left" Width="118"/>
                     </ComboBox>
                     <Label x:Name="label8" Content="Yield" Canvas.Left="1024"/>
+                    <Button x:Name="btnExportBond" Content="Export to CSV" Canvas.Left="902" Canvas.Top="487" Width="95" Click="ExportBond"/>
 
                 </Canvas>
             </TabItem>
@@ -110,13 +111,14 @@
                             <DataGridTextColumn Header="Status" Binding="{Binding status}" IsReadOnly="True"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Button x:Name="btnRefreshTransaction" Content="Refresh" Canvas.Left="1010" Canvas.Top="488" Width="75" Click="RefreshTransaction"/>
+                    <Button x:Name="btnRefreshTransaction" Content="Refresh" Canvas.Left="910" Canvas.Top="488" Width="75" Click="RefreshTransaction"/>
                     <Button x:Name="btnCancelOrder" Content="Cancel Order" Canvas.Left="1090" Canvas.Top="488" Width="92" Click="CancelOrder"/>
                     <Label x:Name="label9" Content="Transaction Search" Canvas.Left="10" Canvas.Top="4" FontWeight="Bold"/>
                     <Label x:Name="label10" Content="ISIN:" Canvas.Left="140" Canvas.Top="4"/>
                     <TextBox x:Name="txtTransISIN" Height="23" Canvas.Left="182" TextWrapping="Wrap" Canvas.Top="6" Width="176" TextChanged="SearchTransactionISIN"/>
                     <Label x:Name="label11" Content="Customer ID: " Canvas.Left="376" Canvas.Top="4"/>
                     <TextBox x:Name="txtCustomerID" Height="23" Canvas.Left="466" TextWrapping="Wrap" Canvas.Top="6" Width="201" TextChanged="SearchTransactionCustomerID"/>
+                    <Button x:Name="btnTransactionExport" Content="Export to CSV" Canvas.Left="990" Canvas.Top="488" Width="95" Click="ExportTransaction"/>
 
                 </Canvas>
             </TabItem>

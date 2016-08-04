@@ -422,5 +422,68 @@ namespace bondCrunchersUI
         {
             SearchTransactionISIN(sender, e);
         }
+
+        private void ExportBond(object sender, RoutedEventArgs e)
+        {
+            StreamWriter sw = null;
+            try
+            {
+                sw = new StreamWriter("data.csv");
+                if (bondList != null)
+                {
+                    sw.WriteLine("id, isin, issuerName, maturityDate, startDate, bondDuration, couponRate, couponPeriod, high, low, last, change, yield, pieceSize, fitch, moody's, snp");
+                    foreach (var bond in bondList)
+                    {
+                        sw.WriteLine(bond.id + ", " + bond.isin + ", " + bond.issuerName + ", " + bond.Maturity.ToShortDateString() + ", "
+                            + bond.Start.ToShortDateString() + ", " + bond.bondDuration + ", " + bond.couponRate + ", " + bond.couponPeriod +
+                            ", " + bond.high + ", " + bond.low + ", " + bond.lastPrice + ", " + bond.changePrice + ", " +
+                            bond.currentYield + ", " + bond.pieceSize + ", " + bond.fitch + ", " + bond.moodys + ", " + bond.snP);
+                    }
+                }
+                statusLabel.Content = "Status: Data exported to data.csv";
+            }
+            catch (Exception)
+            {
+                statusLabel.Content = "Status: Writing to CSV file failed.";
+            }
+            finally {
+                if (sw != null)
+                {
+                    sw.Close();
+                }
+            }
+        }
+
+        private void ExportTransaction(object sender, RoutedEventArgs e)
+        {
+            StreamWriter sw = null;
+            try
+            {
+                sw = new StreamWriter("transaction_history.csv");
+                if (!transactionHistory.Items.IsEmpty)
+                {
+                    sw.WriteLine("orderID, timeStamp, customerID, isin, tradeDate, settlementDate, cleanPrice, dirtyPrice, tradeYield, quantity, accruedAmount, settlementAmount, status");
+                    foreach (TransactionLog transaction in transactionHistory.Items)
+                    {
+                        sw.WriteLine(transaction.orderId + ", " + transaction.timeStampLog.ToShortDateString() + ", " + transaction.customerId + ", " + transaction.isin + ", "
+                            + transaction.tradeDateShort + ", " + transaction.settlementDateShort + ", " + transaction.cleanPrice + ", " + transaction.dirtyPrice +
+                            ", " + transaction.tradeYield + ", " + transaction.quantity + ", " + transaction.accruedAmount + ", " + transaction.settlementAmount + ", " +
+                            transaction.status);
+                    }
+                }
+                statusLabel.Content = "Status: Data exported to transaction_history.csv";
+            }
+            catch (Exception)
+            {
+                statusLabel.Content = "Status: Writing to CSV file failed.";
+            }
+            finally
+            {
+                if (sw != null)
+                {
+                    sw.Close();
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,16 @@
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\bin\Debug\bondCrunchersUI.exe.config
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\bin\Debug\bondCrunchersUI.exe
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\bin\Debug\bondCrunchersUI.pdb
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\bondCrunchersUI.csprojResolveAssemblyReference.cache
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\BookTradeWindow.g.cs
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\MainWindow.g.cs
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\App.g.cs
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\bondCrunchersUI_MarkupCompile.cache
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\bondCrunchersUI_MarkupCompile.lref
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\BookTradeWindow.baml
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\MainWindow.baml
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\bondCrunchersUI.g.resources
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\bondCrunchersUI.Properties.Resources.resources
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\bondCrunchersUI.csproj.GenerateResource.Cache
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\bondCrunchersUI.exe
+C:\Users\Grad85\bondCrunchersUI\bondCrunchersUI\obj\Debug\bondCrunchersUI.pdb
