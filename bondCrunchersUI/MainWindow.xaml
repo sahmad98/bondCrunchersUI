@@ -36,12 +36,22 @@
             </TabItem>
             <TabItem Header="Transaction History">
                 <Canvas>
-                    <DataGrid x:Name="dataGrid" Height="520" Width="699">
+                    <DataGrid x:Name="transactionHistory" Height="482" Width="773">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="OrderID"/>
-                            <DataGridTextColumn Header="Time Stamp"/>
+                            <DataGridTextColumn Header="OrderID" Binding="{Binding orderId}"/>
+                            <DataGridTextColumn Header="Time Stamp" Binding="{Binding timeStampLog}"/>
+                            <DataGridTextColumn Header="ISIN" Binding="{Binding isin}"/>
+                            <DataGridTextColumn Header="Trade Date" Binding="{Binding tradeDateShort}"/>
+                            <DataGridTextColumn Header="Settlement Date" Binding="{Binding settlementDateShort}" />
+                            <DataGridTextColumn Header="Clean Price" Binding="{Binding cleanPrice}" />
+                            <DataGridTextColumn Header="Accrued Amount" Binding="{Binding accruedAmount}"/>
+                            <DataGridTextColumn Header="Dirty Price" Binding="{Binding dirtyPrice}" />
+                            <DataGridTextColumn Header="Trade Yield" Binding="{Binding tradeYield}" />
+                            <DataGridTextColumn Header="Settlement Amount" Binding="{Binding settlementAmount}" />
+
                         </DataGrid.Columns>
                     </DataGrid>
+                    <Button x:Name="btnRefreshTransaction" Content="Refresh" Canvas.Left="686" Canvas.Top="490" Width="75" Click="RefreshTransaction"/>
 
                 </Canvas>
             </TabItem>

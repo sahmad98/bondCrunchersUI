@@ -31,8 +31,11 @@ namespace bondCrunchersUI
 
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
         string restURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product";
+        string transactionURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product/transhis";
         public static List<Bond> bondList = null;
         public static string selectedBond = "";
+        WebClient webClient = new WebClient();
+
         private void Setup(object sender, RoutedEventArgs e)
         {
             
@@ -42,7 +45,6 @@ namespace bondCrunchersUI
         {
             try
             {
-                WebClient webClient = new WebClient();
                 string json = webClient.DownloadString(restURI);
                 bondList = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
                 foreach (Bond temp in bondList)
@@ -66,6 +68,17 @@ namespace bondCrunchersUI
         private void ChangeSelection(object sender, SelectionChangedEventArgs e)
         {
             selectedBond = ((Bond)bondData.SelectedItem).isin;
+        }
+
+        private void RefreshTransaction(object sender, RoutedEventArgs e)
+        {
+            string json = webClient.DownloadString(transactionURI);
+            List<TransactionLog> transactionList = (List<TransactionLog>)jsonSerializer.Deserialize(json, typeof(List<TransactionLog>));
+            foreach (TransactionLog temp in transactionList)
+            {
+                temp.ConvertDates();
+                transactionHistory.Items.Add(temp);
+            }
         }
     }
 }

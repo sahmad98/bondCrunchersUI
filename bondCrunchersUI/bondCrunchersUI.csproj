@@ -64,6 +64,7 @@
     </Compile>
     <Compile Include="TestClass.cs" />
     <Compile Include="Transaction.cs" />
+    <Compile Include="TransactionLog.cs" />
     <Page Include="BookTradeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

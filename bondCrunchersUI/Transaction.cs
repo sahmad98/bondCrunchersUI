@@ -19,6 +19,8 @@ namespace bondCrunchersUI
         [DataMember]
         public long settlementDate { get; set; }
         [DataMember]
+        public long tradeDate { get; set; }
+        [DataMember]
         public decimal cleanPrice { get; set; }
         [DataMember]
         public decimal dirtyPrice { get; set; }

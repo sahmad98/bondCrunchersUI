@@ -46,26 +46,57 @@ namespace bondCrunchersUI
         {
             DialogResult = true;
             Transaction newTransaction = new Transaction();
-            newTransaction.isin = (string)cmbISIN.SelectedItem;
-            //newTransaction.timeStamp = (long)(TimeZoneInfo.ConvertTimeToUtc(DateTime.Now) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
-            //newTransaction.settlementDate = (long)(TimeZoneInfo.ConvertTimeToUtc((DateTime)dtpSettlement.SelectedDate) - new DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Utc)).TotalSeconds;
-            //MessageBox.Show(newTransaction.timeStamp+"");
-            newTransaction.settlementDate = (long)((DateTime)dtpSettlement.SelectedDate - new DateTime(1970,1,1,0,0,0)).TotalMilliseconds;
-            newTransaction.timeStamp = (long)(DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
-
-            newTransaction.settlementAmount = decimal.Parse(txtSettlemetAmount.Text);
-            newTransaction.tradeYield = decimal.Parse(txtTradeYield.Text);
-            newTransaction.accruedAmount = decimal.Parse(txtAccruedAmount.Text);
-            newTransaction.cleanPrice = decimal.Parse(txtCleanPrice.Text);
-            newTransaction.dirtyPrice = decimal.Parse(txtDirtyPrice.Text);
-            string json = jsonSerializer.Serialize(newTransaction);
-            web.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-            web.UploadString(transactionLogURI, "POST", json);
+            getData(newTransaction);
+            try
+            {
+                string json = jsonSerializer.Serialize(newTransaction);
+                web.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+                web.UploadString(transactionLogURI, "POST", json);
+            }
+            catch (Exception ie)
+            {
+                MessageBox.Show("Error Occured. " + ie);
+            }
         }
 
         private void CancelTrade(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+
+        private void getData(Transaction newTransaction)
+        {
+            newTransaction.isin = (string)cmbISIN.SelectedItem;
+            //newTransaction.timeStamp = (long)(TimeZoneInfo.ConvertTimeToUtc(DateTime.Now) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
+            //newTransaction.settlementDate = (long)(TimeZoneInfo.ConvertTimeToUtc((DateTime)dtpSettlement.SelectedDate) - new DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Utc)).TotalSeconds;
+            //MessageBox.Show(newTransaction.timeStamp+"");
+            newTransaction.settlementDate = (long)((DateTime)dtpSettlement.SelectedDate - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
+            newTransaction.timeStamp = (long)(DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
+            newTransaction.timeStamp = (long)((DateTime)dtpTrade.SelectedDate - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
+            newTransaction.settlementAmount = decimal.Parse(txtSettlemetAmount.Text);
+            newTransaction.tradeYield = decimal.Parse(txtTradeYield.Text);
+            newTransaction.accruedAmount = decimal.Parse(txtAccruedAmount.Text);
+            newTransaction.cleanPrice = decimal.Parse(txtCleanPrice.Text);
+            newTransaction.dirtyPrice = decimal.Parse(txtDirtyPrice.Text);
+       }
+
+        private void EnableFields(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                float.Parse(txtTradeYield.Text);
+                txtCleanPrice.IsEnabled = true;
+                txtDirtyPrice.IsEnabled = true;
+                txtCleanPrice.Text = "";
+                txtDirtyPrice.Text = "";
+            }
+            catch (FormatException fe)
+            {
+                txtCleanPrice.IsEnabled = false;
+                txtDirtyPrice.IsEnabled = false;
+                txtDirtyPrice.Text = "Please enter a numeric in trade";
+                txtCleanPrice.Text = "Please enter a numeric in trade";
+            }
         }
     }
 }
