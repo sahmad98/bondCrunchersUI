@@ -80,6 +80,7 @@ namespace bondCrunchersUI
             newTransaction.cleanPrice = decimal.Parse(cleanPrice.ToString());
             newTransaction.dirtyPrice = decimal.Parse(dirtyPrice.ToString());
             newTransaction.quantity = int.Parse(txtQuantity.Text);
+            newTransaction.status = "Booked";
        }
 
         private void EnableFields(object sender, TextChangedEventArgs e)

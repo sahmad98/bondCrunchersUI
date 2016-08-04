@@ -11,6 +11,12 @@
         <TabControl x:Name="tabControl" Height="552" Canvas.Top="39" Width="1216">
             <TabItem Header="Bond Listing">
                 <Canvas>
+                    <Canvas.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF0080FF" Offset="1"/>
+                            <GradientStop Color="#FF6EB8FF"/>
+                        </LinearGradientBrush>
+                    </Canvas.Background>
                     <DataGrid x:Name="bondData" Height="419" Width="1206" HorizontalContentAlignment="Center" SelectionChanged="ChangeSelection" Canvas.Top="63" MouseDoubleClick="DoubleClickTrade">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True" />
@@ -33,8 +39,8 @@
                         </DataGrid.Columns>
 
                     </DataGrid>
-                    <Button x:Name="btnLoad" Content="Load Bonds" Canvas.Left="933" Canvas.Top="487" Width="84" Click="LoadBonds" />
-                    <Button x:Name="btnBook" Content="Book Trade" Canvas.Left="1112" Canvas.Top="487" Width="75" Click="BookTrade"/>
+                    <Button x:Name="btnLoad" Content="Load Bonds" Canvas.Left="913" Canvas.Top="487" Width="84" Click="LoadBonds" />
+                    <Button x:Name="btnBook" Content="Book Trade" Canvas.Left="1090" Canvas.Top="487" Width="94" Click="BookTrade"/>
                     <TextBox x:Name="txtSearch" Height="23" Canvas.Left="130" TextWrapping="Wrap" Canvas.Top="34" Width="120" TextChanged="SearchChanged"/>
                     <Button x:Name="btnTestConnection" Content="Test Connection" Canvas.Left="483" Canvas.Top="4" Width="107" Click="TestConnection"/>
                     <Label x:Name="label1" Content="Search Bond" Canvas.Left="2" Canvas.Top="32" FontWeight="Bold"/>
@@ -51,7 +57,7 @@
                     <Label x:Name="label5" Content="Connection" Canvas.Top="-1" FontWeight="Bold"/>
                     <Label x:Name="label6" Content="http://" Canvas.Left="86" Canvas.Top="-1"/>
                     <TextBox x:Name="txtIP" Height="23" Canvas.Left="130" TextWrapping="Wrap" Canvas.Top="4" Width="340" TextChanged="IPChanged" Text="192.168.66.53:8080"/>
-                    <Button x:Name="txtClear" Content="Clear Bonds" Canvas.Left="1022" Canvas.Top="487" Width="83" Click="ClearBonds"/>
+                    <Button x:Name="txtClear" Content="Clear Bonds" Canvas.Left="1002" Canvas.Top="487" Width="83" Click="ClearBonds"/>
                     <Label x:Name="label7" Content="Ratings Search" Canvas.Left="763" Canvas.Top="-1"/>
                     <ComboBox x:Name="cmbRating" Canvas.Left="698" Canvas.Top="32" Width="120" DropDownClosed="PopulateRatings">
                         <ComboBoxItem Content="Moody's" HorizontalAlignment="Left" Width="118"/>
@@ -73,7 +79,7 @@
                 </Canvas>
             </TabItem>
             <TabItem Header="Transaction History">
-                <Canvas>
+                <Canvas Background="#FFD8E1F3">
                     <DataGrid x:Name="transactionHistory" Height="482" Width="1206">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="OrderID" Binding="{Binding orderId}" IsReadOnly="True"/>
