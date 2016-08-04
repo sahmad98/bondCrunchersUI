@@ -18,23 +18,23 @@ namespace bondCrunchersUI
         [DataMember]
         public string isin { get; set; }
         [DataMember]
-        public string maturity_Date { get; set; }
+        public string maturityDate { get; set; }
         [DataMember]
-        public string start_Date { get; set; }
+        public string startDate { get; set; }
         [DataMember]
-        public int bond_Duration { get; set; }
+        public int bondDuration { get; set; }
         [DataMember]
-        public decimal coupon_Rate { get; set; }
+        public decimal couponRate { get; set; }
         [DataMember]
-        public string coupon_Period { get; set; }
+        public string couponPeriod { get; set; }
         [DataMember]
         public decimal high { get; set; }
         [DataMember]
         public decimal low { get; set; }
         [DataMember]
-        public decimal last { get; set; }
+        public decimal lastPrice { get; set; }
         [DataMember]
-        public decimal change { get; set; }
+        public decimal changePrice { get; set; }
         [DataMember]
         public decimal yield { get;  set;}
 

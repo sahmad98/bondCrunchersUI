@@ -15,15 +15,15 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="ISIN" Binding="{Binding isin}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Maturity Date" Binding="{Binding maturity_Date}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Start Date" Binding="{Binding start_Date}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Bond Duration" Binding="{Binding bond_Duration}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Coupon Rate" Binding="{Binding coupon_Rate}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Coupon Period" Binding="{Binding coupon_Period}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Maturity Date" Binding="{Binding maturityDate}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Start Date" Binding="{Binding startDate}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Bond Duration" Binding="{Binding bondDuration}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Coupon Rate" Binding="{Binding couponRate}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Coupon Period" Binding="{Binding couponPeriod}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="High" Binding="{Binding high}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Low" Binding="{Binding low}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Last" Binding="{Binding last}" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Change" Binding="{Binding change}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Last" Binding="{Binding lastPrice}" IsReadOnly="True" />
+                            <DataGridTextColumn Header="Change" Binding="{Binding changePrice}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Yield" Binding="{Binding yield}" IsReadOnly="True" />
                             
                         </DataGrid.Columns>

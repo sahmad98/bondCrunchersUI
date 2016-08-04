@@ -67,12 +67,9 @@ namespace bondCrunchersUI
         private void getData(Transaction newTransaction)
         {
             newTransaction.isin = (string)cmbISIN.SelectedItem;
-            //newTransaction.timeStamp = (long)(TimeZoneInfo.ConvertTimeToUtc(DateTime.Now) - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
-            //newTransaction.settlementDate = (long)(TimeZoneInfo.ConvertTimeToUtc((DateTime)dtpSettlement.SelectedDate) - new DateTime(1970,1,1,0,0,0,0, System.DateTimeKind.Utc)).TotalSeconds;
-            //MessageBox.Show(newTransaction.timeStamp+"");
             newTransaction.settlementDate = (long)((DateTime)dtpSettlement.SelectedDate - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
             newTransaction.timeStamp = (long)(DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
-            newTransaction.timeStamp = (long)((DateTime)dtpTrade.SelectedDate - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
+            newTransaction.tradeDate = (long)((DateTime)dtpTrade.SelectedDate - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
             newTransaction.settlementAmount = decimal.Parse(txtSettlemetAmount.Text);
             newTransaction.tradeYield = decimal.Parse(txtTradeYield.Text);
             newTransaction.accruedAmount = decimal.Parse(txtAccruedAmount.Text);
