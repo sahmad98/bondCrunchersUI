@@ -35,15 +35,19 @@
                     <Button x:Name="btnLoad" Content="Load Bonds" Canvas.Left="940" Canvas.Top="487" Width="75" Click="LoadBonds" />
                     <Button x:Name="btnBook" Content="Book Trade" Canvas.Left="1020" Canvas.Top="487" Width="75" Click="BookTrade"/>
                     <TextBox x:Name="txtSearch" Height="23" Canvas.Left="130" TextWrapping="Wrap" Canvas.Top="10" Width="120" TextChanged="SearchChanged"/>
-                    <Button x:Name="btnSearch" Content="Search" Canvas.Left="1020" Canvas.Top="10" Width="75" Click="Search"/>
+                    <Button x:Name="btnTestConnection" Content="Test Connection" Canvas.Left="988" Canvas.Top="10" Width="107" Click="TestConnection"/>
                     <Label x:Name="label1" Content="Search Bond" Canvas.Left="2" Canvas.Top="8" FontWeight="Bold"/>
                     <Label x:Name="label2" Content="ISIN:" Canvas.Left="97" Canvas.Top="8"/>
                     <ComboBox x:Name="cmbCoupon" Canvas.Left="350" Canvas.Top="10" Width="120" DropDownClosed="CouponPeriodChanged">
+                        <ComboBoxItem Content="Any" HorizontalAlignment="Left" Width="118"/>
                         <ComboBoxItem Content="Annual" HorizontalAlignment="Left" Width="118"/>
                         <ComboBoxItem Content="Semi-Annual" HorizontalAlignment="Left" Width="118"/>
                         <ComboBoxItem Content="Quaterly" HorizontalAlignment="Left" Width="118"/>
                     </ComboBox>
                     <Label x:Name="label3" Content="Coupon Period:" Canvas.Left="250" Canvas.Top="8"/>
+                    <Label x:Name="label4" Content="Issuer Name:" Canvas.Left="493" Canvas.Top="8"/>
+                    <TextBox x:Name="txtIssuerSearch" Height="23" Canvas.Left="584" TextWrapping="Wrap" Canvas.Top="10" Width="120" TextChanged="SearchIssuer"/>
+                    <Label x:Name="statusLabel" Content="Status: " Canvas.Left="10" Canvas.Top="487"/>
 
                 </Canvas>
             </TabItem>

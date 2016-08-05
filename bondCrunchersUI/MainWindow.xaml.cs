@@ -33,6 +33,7 @@ namespace bondCrunchersUI
         string restURI = IP+"/EBondTraderWeb/rest/bond";
         string transactionURI = IP+"/EBondTraderWeb/rest/bond/transhis";
         string searchURI = IP+"/EBondTraderWeb/rest/bond/allBondsBy";
+        string customerSearchURI = IP + "/EBondTraderWeb/rest/bond/allBondsByCustomSearch";
 
         public static List<Bond> bondList = null;
         public static string selectedBond = "";
@@ -70,7 +71,8 @@ namespace bondCrunchersUI
 
         private void ChangeSelection(object sender, SelectionChangedEventArgs e)
         {
-            selectedBond = ((Bond)bondData.SelectedItem).isin;
+            if(!bondData.Items.IsEmpty)
+                selectedBond = ((Bond)bondData.SelectedItem).isin;
         }
 
         private void RefreshTransaction(object sender, RoutedEventArgs e)
@@ -100,9 +102,15 @@ namespace bondCrunchersUI
             List<Bond> searchResult = bondList.FindAll(x => x.isin.StartsWith(txtSearch.Text));
             */
             //webClient.Headers.Add(HttpRequestHeader.ContentType, "text/plain");
-            string json = webClient.DownloadString(searchURI+"Isin?isin="+txtSearch.Text);
+            string json = "";
+            if (cmbCoupon.Text == "Any" || cmbCoupon.Text == "")
+                json = webClient.DownloadString(customerSearchURI + "?isin=" + txtSearch.Text);
+            else
+                json = webClient.DownloadString(customerSearchURI + "?isin=" + txtSearch.Text + "&coupon_Period="+cmbCoupon.Text);
+
             List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
             bondData.Items.Clear();
+            bondList = searchResult;
             foreach (Bond temp in searchResult)
             {
                 AddToGrid(temp);
@@ -111,11 +119,15 @@ namespace bondCrunchersUI
 
         private void CouponPeriodChanged(object sender, EventArgs e)
         {
-            string json = webClient.DownloadString(searchURI + "CouponPeriod?coupon_Period=" + cmbCoupon.Text);
-            MessageBox.Show(searchURI + "?coupon_Period=" + cmbCoupon.Text);
-            MessageBox.Show(json);
+            string search = null;
+            if (cmbCoupon.Text == "Any")
+                search = null;
+            else
+                search = cmbCoupon.Text;
+            string json = webClient.DownloadString(searchURI + "CouponPeriod?coupon_Period=" + search);
             List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
             bondData.Items.Clear();
+            bondList = searchResult;
             foreach (Bond temp in searchResult)
             {
                 AddToGrid(temp);
@@ -126,6 +138,22 @@ namespace bondCrunchersUI
         {
             temp.ConvertDates();
             bondData.Items.Add(temp);
+        }
+
+        private void SearchIssuer(object sender, TextChangedEventArgs e)
+        {
+            string json = webClient.DownloadString(searchURI + "IssuerName?issuerName=" + txtIssuerSearch.Text);
+            List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
+            bondData.Items.Clear();
+            foreach (Bond temp in searchResult)
+            {
+                AddToGrid(temp);
+            }
+        }
+
+        private void TestConnection(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

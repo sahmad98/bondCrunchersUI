@@ -92,6 +92,29 @@ namespace bondCrunchersUI
                 {
                     decimal faceValue = (selectedBond.yield * selectedBond.lastPrice) / selectedBond.couponRate;
                     txtCleanPrice.Text = String.Format("{0}", faceValue.ToString("C"));
+                    decimal presentValue = 0;
+                    DateTime nextCoupon = selectedBond.Start;
+                    DateTime lastCoupon = selectedBond.Start;
+                    while (nextCoupon.ToBinary() < ((DateTime)dtpTrade.SelectedDate).ToBinary())
+                    {
+                        if (selectedBond.couponPeriod == "Annual")
+                        {
+                            lastCoupon = nextCoupon.Date;
+                            nextCoupon.AddYears(1);
+                        }
+                        else if (selectedBond.couponPeriod == "Semi-Annual")
+                        {
+                            lastCoupon = nextCoupon.Date;
+                            nextCoupon.AddMonths(6);
+                        }
+                        else if (selectedBond.couponPeriod == "Quaterly")
+                        {
+                            lastCoupon = nextCoupon.Date;
+                            nextCoupon.AddMonths(3);
+                        }
+                    }
+                    MessageBox.Show(lastCoupon + " " +nextCoupon.ToShortDateString());
+                    
                 }
                 else
                 {
