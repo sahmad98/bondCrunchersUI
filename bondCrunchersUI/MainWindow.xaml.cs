@@ -28,10 +28,12 @@ namespace bondCrunchersUI
         {
             InitializeComponent();
         }
-
+        public static string IP = "http://192.168.66.1:8080";
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-        string restURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product";
-        string transactionURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product/transhis";
+        string restURI = IP+"/EBondTraderWeb/rest/bond";
+        string transactionURI = IP+"/EBondTraderWeb/rest/bond/transhis";
+        string searchURI = IP+"/EBondTraderWeb/rest/bond/allBondsBy";
+
         public static List<Bond> bondList = null;
         public static string selectedBond = "";
         WebClient webClient = new WebClient();
@@ -49,6 +51,7 @@ namespace bondCrunchersUI
                 bondList = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
                 foreach (Bond temp in bondList)
                 {
+                    temp.ConvertDates();
                     bondData.Items.Add(temp);
                 }
             }
@@ -79,6 +82,50 @@ namespace bondCrunchersUI
                 temp.ConvertDates();
                 transactionHistory.Items.Add(temp);
             }
+        }
+
+        private void Search(object sender, RoutedEventArgs e)
+        {
+            List<Bond> searchResult = bondList.FindAll(x => x.isin.StartsWith(txtSearch.Text));
+            bondData.Items.Clear();
+            foreach (Bond temp in searchResult)
+            {
+                AddToGrid(temp);
+            }
+        }
+
+        private void SearchChanged(object sender, TextChangedEventArgs e)
+        {
+            /*
+            List<Bond> searchResult = bondList.FindAll(x => x.isin.StartsWith(txtSearch.Text));
+            */
+            //webClient.Headers.Add(HttpRequestHeader.ContentType, "text/plain");
+            string json = webClient.DownloadString(searchURI+"Isin?isin="+txtSearch.Text);
+            List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
+            bondData.Items.Clear();
+            foreach (Bond temp in searchResult)
+            {
+                AddToGrid(temp);
+            }
+        }
+
+        private void CouponPeriodChanged(object sender, EventArgs e)
+        {
+            string json = webClient.DownloadString(searchURI + "CouponPeriod?coupon_Period=" + cmbCoupon.Text);
+            MessageBox.Show(searchURI + "?coupon_Period=" + cmbCoupon.Text);
+            MessageBox.Show(json);
+            List<Bond> searchResult = (List<Bond>)jsonSerializer.Deserialize(json, typeof(List<Bond>));
+            bondData.Items.Clear();
+            foreach (Bond temp in searchResult)
+            {
+                AddToGrid(temp);
+            }
+        }
+
+        private void AddToGrid(Bond temp)
+        {
+            temp.ConvertDates();
+            bondData.Items.Add(temp);
         }
     }
 }

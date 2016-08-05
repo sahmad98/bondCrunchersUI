@@ -18,9 +18,11 @@ namespace bondCrunchersUI
         [DataMember]
         public string isin { get; set; }
         [DataMember]
-        public string maturityDate { get; set; }
+        public string issuerName { get; set; }
         [DataMember]
-        public string startDate { get; set; }
+        public long maturityDate { get; set; }
+        [DataMember]
+        public long startDate { get; set; }
         [DataMember]
         public int bondDuration { get; set; }
         [DataMember]
@@ -36,13 +38,44 @@ namespace bondCrunchersUI
         [DataMember]
         public decimal changePrice { get; set; }
         [DataMember]
-        public decimal yield { get;  set;}
+        public decimal yield { get; set; }
+        [DataMember]
+        public string fitch { get; set; }
+        [DataMember]
+        public string moodys { get; set; }
+        [DataMember]
+        public string snP { get; set; }
 
         //public string Image = "th.png";
 
+        [IgnoreDataMember]
+        public DateTime Maturity { get; set; }
+        [IgnoreDataMember]
+        public DateTime Start { get; set; }
+        [IgnoreDataMember]
+        public string maturityShortDate { get; set; }
+        [IgnoreDataMember]
+        public string startShortDate { get; set; }
         public override string ToString()
         {
             return isin;
+        }
+
+        public void ConvertDates()
+        {
+            {
+                DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+                if (maturityDate != 0)
+                {
+                    Maturity = epoch.AddMilliseconds(maturityDate).ToLocalTime();
+                    maturityShortDate = Maturity.ToShortDateString();
+                }
+                if (startDate != 0)
+                {
+                    Start = epoch.AddMilliseconds(startDate).ToLocalTime();
+                    startShortDate = Start.ToShortDateString();
+                }                
+            }
         }
     }
 

@@ -26,20 +26,23 @@ namespace bondCrunchersUI
         }
 
         JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-        string transactionLogURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product/trans";
+        string transactionLogURI = "http://192.168.66.53:8080/EBondTraderWeb/rest/product/trans";
+        string bondDataURI = "http://192.168.66.1:8080/EBondTraderWeb/rest/product?isin=";
         WebClient web = new WebClient();
+        Bond selectedBond = null;
 
         private void SetupTradeBooking(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
             foreach (Bond temp in bondCrunchersUI.MainWindow.bondList)
             {
-                cmbISIN.Items.Add(temp.isin);
-                
+                cmbISIN.Items.Add(temp.isin);              
             }
             cmbISIN.SelectedItem = bondCrunchersUI.MainWindow.selectedBond;
             txtSettlemetAmount.Text = "123";
             txtAccruedAmount.Text = "12.33";
+            //string response = web.DownloadString(bondDataURI+cmbISIN.SelectedItem);
+            //selectedBond = (Bond)jsonSerializer.Deserialize(response, typeof(Bond));
+            selectedBond = bondCrunchersUI.MainWindow.bondList.Find(x => x.isin == (string)cmbISIN.SelectedItem);
         }
 
         private void BookTrade(object sender, RoutedEventArgs e)
@@ -64,6 +67,7 @@ namespace bondCrunchersUI
             DialogResult = false;
         }
 
+        //Populate the Trade Information in Transaction object
         private void getData(Transaction newTransaction)
         {
             newTransaction.isin = (string)cmbISIN.SelectedItem;
@@ -81,11 +85,18 @@ namespace bondCrunchersUI
         {
             try
             {
-                float.Parse(txtTradeYield.Text);
+
                 txtCleanPrice.IsEnabled = true;
                 txtDirtyPrice.IsEnabled = true;
-                txtCleanPrice.Text = "";
-                txtDirtyPrice.Text = "";
+                if (selectedBond != null)
+                {
+                    decimal faceValue = (selectedBond.yield * selectedBond.lastPrice) / selectedBond.couponRate;
+                    txtCleanPrice.Text = String.Format("{0}", faceValue.ToString("C"));
+                }
+                else
+                {
+                    txtCleanPrice.Text = "NULL";
+                }
             }
             catch (FormatException fe)
             {
@@ -94,6 +105,7 @@ namespace bondCrunchersUI
                 txtDirtyPrice.Text = "Please enter a numeric in trade";
                 txtCleanPrice.Text = "Please enter a numeric in trade";
             }
+
         }
     }
 }

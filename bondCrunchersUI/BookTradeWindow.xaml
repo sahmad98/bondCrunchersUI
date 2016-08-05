@@ -18,12 +18,12 @@
             <Label x:Name="label7" Content="Settlement Amount:" HorizontalAlignment="Center"/>
         </StackPanel>
         <StackPanel Height="212" Canvas.Left="134" Width="178" Canvas.Top="10">
-            <ComboBox x:Name="cmbISIN" Margin="1.5"/>
+            <ComboBox x:Name="cmbISIN" Margin="1.5" />
             <DatePicker x:Name="dtpTrade" Margin="1.5" />
             <DatePicker x:Name="dtpSettlement" Margin="1.5" />
             <TextBox x:Name="txtTradeYield" Margin="1.5" Height="23" TextWrapping="Wrap" TextChanged="EnableFields"/>
-            <TextBox x:Name="txtDirtyPrice" Margin="1.5" Height="23" TextWrapping="Wrap" IsEnabled="False" />
             <TextBox x:Name="txtCleanPrice" Margin="1.5" Height="23" TextWrapping="Wrap" IsEnabled="False" />
+            <TextBox x:Name="txtDirtyPrice" Margin="1.5" Height="23" TextWrapping="Wrap" IsEnabled="False" />
             <TextBox x:Name="txtAccruedAmount" Margin="1.5" Height="23" TextWrapping="Wrap" IsEnabled="False"/>
             <TextBox x:Name="txtSettlemetAmount" Height="23" TextWrapping="Wrap" Margin="1.5" IsEnabled="False"/>
         </StackPanel>
