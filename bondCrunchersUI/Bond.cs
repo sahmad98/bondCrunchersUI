@@ -14,7 +14,7 @@ namespace bondCrunchersUI
     public class Bond
     {
         [DataMember]
-        public int id { get; set; }
+        public int bondId { get; set; }
         [DataMember]
         public string isin { get; set; }
         [DataMember]
@@ -38,7 +38,7 @@ namespace bondCrunchersUI
         [DataMember]
         public decimal changePrice { get; set; }
         [DataMember]
-        public decimal yield { get; set; }
+        public decimal currentYield { get; set; }
         [DataMember]
         public string fitch { get; set; }
         [DataMember]

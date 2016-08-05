@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Web.Script.Serialization;
+
 namespace bondCrunchersUI
 {
     /// <summary>
@@ -90,31 +91,15 @@ namespace bondCrunchersUI
                 txtDirtyPrice.IsEnabled = true;
                 if (selectedBond != null)
                 {
-                    decimal faceValue = (selectedBond.yield * selectedBond.lastPrice) / selectedBond.couponRate;
-                    txtCleanPrice.Text = String.Format("{0}", faceValue.ToString("C"));
-                    decimal presentValue = 0;
-                    DateTime nextCoupon = selectedBond.Start;
-                    DateTime lastCoupon = selectedBond.Start;
-                    while (nextCoupon.ToBinary() < ((DateTime)dtpTrade.SelectedDate).ToBinary())
-                    {
-                        if (selectedBond.couponPeriod == "Annual")
-                        {
-                            lastCoupon = nextCoupon.Date;
-                            nextCoupon.AddYears(1);
-                        }
-                        else if (selectedBond.couponPeriod == "Semi-Annual")
-                        {
-                            lastCoupon = nextCoupon.Date;
-                            nextCoupon.AddMonths(6);
-                        }
-                        else if (selectedBond.couponPeriod == "Quaterly")
-                        {
-                            lastCoupon = nextCoupon.Date;
-                            nextCoupon.AddMonths(3);
-                        }
-                    }
-                    MessageBox.Show(lastCoupon + " " +nextCoupon.ToShortDateString());
-                    
+                    decimal faceValue = (selectedBond.currentYield * selectedBond.lastPrice) / selectedBond.couponRate;
+                    decimal yield = decimal.Parse(txtTradeYield.Text);
+                    int numberOfYears = selectedBond.Maturity.Year - ((DateTime)(dtpTrade.SelectedDate)).Year;
+                    double numerator = 1 - Math.Pow(1+double.Parse(yield.ToString()), -numberOfYears);
+                    double denominator = 1 - Math.Pow(1+ double.Parse(yield.ToString()), -1);
+                    double extraFactor = double.Parse(faceValue.ToString()) * Math.Pow(1 + double.Parse(yield.ToString()), -numberOfYears);
+                    double presentValue = double.Parse((faceValue * selectedBond.couponRate).ToString()) * numerator / (denominator * (1 + double.Parse(yield.ToString())));
+                    txtCleanPrice.Text = (presentValue+extraFactor).ToString();
+                    txtDirtyPrice.Text = faceValue.ToString();
                 }
                 else
                 {
@@ -127,6 +112,7 @@ namespace bondCrunchersUI
                 txtDirtyPrice.IsEnabled = false;
                 txtDirtyPrice.Text = "Please enter a numeric in trade";
                 txtCleanPrice.Text = "Please enter a numeric in trade";
+                MessageBox.Show(fe+"");
             }
 
         }
